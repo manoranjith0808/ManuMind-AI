@@ -1,0 +1,2 @@
+﻿timestamp,machine_id,product_type,quantity_produced,target_quantity,start_time,end_time,shift
+2026-08-04T08:00:00Z,M101,Product_A,100,120,2026-08-04T08:00:00Z,2026-08-04T16:00:00Z,Morning
