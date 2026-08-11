@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { extractWebhookPayload } from "@/lib/webhookUtils";
 
 /* ────────────────────────────────────────────────────────────────
    Shape definitions – add more pages here as needed
@@ -89,6 +90,21 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const [scheduling, setScheduling] = useState<SchedulingState>(defaultScheduling);
   const [upload, setUpload] = useState<UploadState>(defaultUpload);
 
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("manumind_webhook_data");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        const normalized = extractWebhookPayload(parsed);
+        if (normalized) {
+          setUpload((prev) => ({ ...prev, webhookData: normalized }));
+        }
+      }
+    } catch (e) {
+      console.error("Failed to restore webhook data from localStorage", e);
+    }
+  }, []);
+
   const setChatState = (s: Partial<ChatState>) =>
     setChat((prev) => ({ ...prev, ...s }));
 
@@ -96,7 +112,23 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     setScheduling((prev) => ({ ...prev, ...s }));
 
   const setUploadState = (s: Partial<UploadState>) =>
-    setUpload((prev) => ({ ...prev, ...s }));
+    setUpload((prev) => {
+      const next = { ...prev, ...s };
+      if (s.webhookData !== undefined) {
+        if (s.webhookData) {
+          try {
+            localStorage.setItem("manumind_webhook_data", JSON.stringify(s.webhookData));
+          } catch (e) {
+            console.error("Failed to save webhook data to localStorage", e);
+          }
+        } else {
+          try {
+            localStorage.removeItem("manumind_webhook_data");
+          } catch (e) {}
+        }
+      }
+      return next;
+    });
 
   return (
     <AppStateContext.Provider

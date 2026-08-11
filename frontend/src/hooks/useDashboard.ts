@@ -47,6 +47,11 @@ export function useDashboard() {
         })),
       };
 
+      // Determine whether there is meaningful production data to show on the dashboard.
+      const hasData = (overview.total_production && overview.total_production > 0) || (Array.isArray(trend) && trend.some((t: any) => Number(t.actual) > 0));
+      // Attach flag to returned payload so UI can decide whether to show empty state.
+      (mappedData as any).hasData = Boolean(hasData);
+
       setData(mappedData);
     } catch (err: any) {
       setError(err.message || 'Failed to fetch dashboard data');

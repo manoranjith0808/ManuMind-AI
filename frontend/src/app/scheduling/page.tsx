@@ -14,6 +14,7 @@ import {
 } from "recharts";
 
 import { useAppState } from "@/components/AppStateProvider";
+import { GetReportButton } from "@/components/GetReportButton";
 
 /* ─── constants ────────────────────────────────────────────────────────────── */
 
@@ -447,6 +448,18 @@ export default function SchedulingPage() {
             {result && !loading && (
               <div className="space-y-6 animate-slide-up">
 
+                {/* Schedule Header & Action Bar */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 glass p-4 rounded-xl border border-border/50">
+                  <div>
+                    <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+                      <CheckCircle2 className="text-green-400" size={20} />
+                      AI Optimized Production Schedule
+                    </h2>
+                    <p className="text-xs text-muted-foreground mt-0.5">Constraint optimization generated for {formData.product_type || "Production"}</p>
+                  </div>
+                  <GetReportButton reportData={result} source="scheduling" />
+                </div>
+
                 {/* Capacity Insufficient Alert */}
                 {isInsufficient && (
                   <div className="flex items-start gap-4 px-5 py-4 rounded-xl border border-red-500/40 bg-red-500/10 text-red-300">
@@ -642,7 +655,7 @@ export default function SchedulingPage() {
                               borderRadius: 8,
                               fontSize: 12,
                             }}
-                            formatter={(val: any, name: string) => [val.toLocaleString(), name]}
+                            formatter={(val: any, name: any) => [val?.toLocaleString() ?? val, name]}
                           />
                           <Bar dataKey="units" name="Allocated Units" radius={[6, 6, 0, 0]}>
                             {allocData.map((entry, i) => (

@@ -1,18 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { Database, Table as TableIcon, Link2, CheckCircle2, Loader2, AlertCircle, ExternalLink, Activity, BarChart3, PieChart as PieChartIcon } from "lucide-react";
+import { Database, Table as TableIcon, Link2, CheckCircle2, Loader2, AlertCircle, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { api } from "@/lib/api";
-import { LineChart, Line, BarChart, Bar, PieChart, Pie, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import { useAppState } from "@/components/AppStateProvider";
-
-const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+import { extractWebhookPayload } from "@/lib/webhookUtils";
 
 export default function UploadPage() {
   const { state, setUploadState } = useAppState();
-  const { sheetUrl, webhookData, status, message } = state.upload;
+  const router = useRouter();
+  const { sheetUrl, status, message } = state.upload;
 
   const [datasets, setDatasets] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -34,7 +34,7 @@ export default function UploadPage() {
     if (!sheetUrl.trim()) return;
     
     setLoading(true);
-    setUploadState({ status: "loading", message: "", webhookData: null });
+    setUploadState({ status: "loading", message: "" });
 
     try {
       // Hit the webhook
@@ -55,11 +55,16 @@ export default function UploadPage() {
         }
       }
 
+      const normalizedData = extractWebhookPayload(data);
+
       setUploadState({
         status: "success",
-        message: "Successfully submitted spreadsheet URL.",
-        webhookData: data,
+        message: "Spreadsheet analyzed successfully. Updating Dashboard...",
+        webhookData: normalizedData,
       });
+
+      // Navigate to the dashboard to view the output charts and KPIs
+      router.push('/dashboard');
     } catch (error: any) {
       setUploadState({
         status: "error",
@@ -175,115 +180,8 @@ export default function UploadPage() {
             </div>
           </div>
 
-          {/* Right Column - Preview & Datasets */}
+          {/* Right Column - Datasets */}
           <div className="lg:col-span-2 space-y-6">
-            
-            {/* Webhook Data Charts */}
-            {webhookData && (
-              <div className="space-y-6 animate-slide-up">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="glass p-4 rounded-xl border border-border/50">
-                    <p className="text-xs text-muted-foreground mb-1">Total Production</p>
-                    <p className="text-2xl font-bold text-foreground">{webhookData.summary?.totalProduction}</p>
-                  </div>
-                  <div className="glass p-4 rounded-xl border border-border/50">
-                    <p className="text-xs text-muted-foreground mb-1">Total Defects</p>
-                    <p className="text-2xl font-bold text-destructive">{webhookData.summary?.totalDefects}</p>
-                  </div>
-                  <div className="glass p-4 rounded-xl border border-border/50">
-                    <p className="text-xs text-muted-foreground mb-1">Avg Utilization</p>
-                    <p className="text-2xl font-bold text-primary">{webhookData.summary?.averageUtilization}%</p>
-                  </div>
-                  <div className="glass p-4 rounded-xl border border-border/50">
-                    <p className="text-xs text-muted-foreground mb-1">Best Machine / Shift</p>
-                    <p className="text-lg font-bold text-foreground">{webhookData.summary?.bestMachine} / {webhookData.summary?.bestShift}</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="glass p-6 rounded-xl border border-border/50">
-                    <h2 className="text-lg font-semibold flex items-center gap-2 mb-4">
-                      <Activity size={20} className="text-blue-500" />
-                      Production Trend
-                    </h2>
-                    <div className="h-64">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={webhookData.productionTrend}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                          <XAxis dataKey="date" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                          <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                          <Tooltip contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', borderColor: 'rgba(255,255,255,0.1)' }} />
-                          <Legend />
-                          <Line type="monotone" dataKey="actualUnits" name="Actual" stroke="#3b82f6" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
-                          <Line type="monotone" dataKey="target" name="Target" stroke="#10b981" strokeWidth={2} strokeDasharray="5 5" />
-                        </LineChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </div>
-
-                  <div className="glass p-6 rounded-xl border border-border/50">
-                    <h2 className="text-lg font-semibold flex items-center gap-2 mb-4">
-                      <BarChart3 size={20} className="text-primary" />
-                      Machine Utilization
-                    </h2>
-                    <div className="h-64">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={webhookData.machineUtilization}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                          <XAxis dataKey="machine" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                          <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                          <Tooltip contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', borderColor: 'rgba(255,255,255,0.1)' }} />
-                          <Bar dataKey="utilization" name="Utilization %" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </div>
-
-                  <div className="glass p-6 rounded-xl border border-border/50">
-                    <h2 className="text-lg font-semibold flex items-center gap-2 mb-4">
-                      <PieChartIcon size={20} className="text-orange-500" />
-                      Defect Analysis
-                    </h2>
-                    <div className="h-64">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie data={webhookData.defectAnalysis} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
-                            {webhookData.defectAnalysis?.map((entry: any, index: number) => (
-                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                          </Pie>
-                          <Tooltip contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', borderColor: 'rgba(255,255,255,0.1)' }} />
-                          <Legend />
-                        </PieChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </div>
-
-                  <div className="glass p-6 rounded-xl border border-border/50">
-                    <h2 className="text-lg font-semibold flex items-center gap-2 mb-4">
-                      <BarChart3 size={20} className="text-purple-500" />
-                      Shift Performance
-                    </h2>
-                    <div className="h-64">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={webhookData.shiftPerformance}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                          <XAxis dataKey="shift" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                          <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                          <Tooltip contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', borderColor: 'rgba(255,255,255,0.1)' }} />
-                          <Legend />
-                          <Bar dataKey="productA" name="Product A" stackId="a" fill="#3b82f6" />
-                          <Bar dataKey="productB" name="Product B" stackId="a" fill="#10b981" />
-                          <Bar dataKey="productC" name="Product C" stackId="a" fill="#f59e0b" radius={[4, 4, 0, 0]} />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Dataset History */}
             <div>
               <h2 className="text-lg font-semibold mb-4">Recent Datasets</h2>
               {datasets.length > 0 ? (
