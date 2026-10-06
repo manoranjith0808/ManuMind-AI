@@ -1,0 +1,1174 @@
+{
+  "_platform": "agentbuilder",
+  "_version": 1,
+  "_exportedAt": "2026-10-06T04:45:59.410Z",
+  "_fingerprint": "YWN0aW9uOmNvZGUuZXhlY3V0ZXxhY3Rpb246Y29kZS5leGVjdXRlfGFjdGlvbjpj",
+  "nodes": [
+    {
+      "id": "webhook-1786077587392",
+      "data": {
+        "label": "Webhook Trigger",
+        "inputs": {
+          "path": "Chatbot",
+          "method": "POST",
+          "options": {},
+          "isPublic": false,
+          "placeholder": "Type your message...",
+          "allowedRoles": "admin, staff",
+          "jwtAlgorithm": "HS256",
+          "responseMode": "Last Node",
+          "roleClaimKey": "role",
+          "sessionClaim": "sub",
+          "sessionSource": "none",
+          "authentication": "none",
+          "requireRoleCheck": false,
+          "requireButtonClick": false,
+          "loadPreviousSession": true
+        },
+        "toolId": "webhook",
+        "toolData": {
+          "id": "webhook",
+          "displayName": "Webhook Trigger",
+          "category": "Input /  Output",
+          "icon": "webhook",
+          "description": "Trigger workflow via webhook",
+          "inputSchemaJSON": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "The path to listen on (e.g. \"my-hook\")"
+              },
+              "method": {
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "POST",
+                  "PUT",
+                  "DELETE",
+                  "PATCH",
+                  "HEAD"
+                ],
+                "default": "POST",
+                "description": "HTTP Method"
+              },
+              "responseMode": {
+                "type": "string",
+                "enum": [
+                  "onReceived",
+                  "lastNode",
+                  "respondWithNode",
+                  "streaming"
+                ],
+                "default": "lastNode",
+                "description": "When to respond"
+              },
+              "authentication": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "basicAuth",
+                  "headerAuth",
+                  "jwtAuth"
+                ],
+                "default": "none",
+                "description": "Authentication"
+              },
+              "basicAuthUser": {
+                "type": "string",
+                "description": "Username"
+              },
+              "basicAuthPassword": {
+                "type": "string",
+                "description": "Password"
+              },
+              "headerAuthName": {
+                "type": "string",
+                "description": "Name"
+              },
+              "headerAuthValue": {
+                "type": "string",
+                "description": "Value"
+              },
+              "jwtSecret": {
+                "type": "string",
+                "description": "Secret"
+              },
+              "jwtAlgorithm": {
+                "type": "string",
+                "enum": [
+                  "HS256",
+                  "HS384",
+                  "HS512"
+                ],
+                "default": "HS256",
+                "description": "Algorithm"
+              },
+              "sessionClaim": {
+                "type": "string",
+                "default": "sub",
+                "description": "JWT claim used to identify the session"
+              },
+              "requireRoleCheck": {
+                "type": "boolean",
+                "default": false,
+                "description": "Require Role Check (RBAC)"
+              },
+              "roleClaimKey": {
+                "type": "string",
+                "default": "role",
+                "description": "Role Claim Key"
+              },
+              "allowedRoles": {
+                "type": "string",
+                "default": "admin, staff",
+                "description": "Allowed Roles (comma separated)"
+              },
+              "sessionSource": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "auto",
+                  "header",
+                  "cookie",
+                  "body"
+                ],
+                "default": "none",
+                "description": "Session Source"
+              },
+              "sessionSourceName": {
+                "type": "string",
+                "description": "Session Source Name (header / cookie / body field)"
+              },
+              "options": {
+                "type": "object",
+                "properties": {
+                  "allowedOrigins": {
+                    "type": "string",
+                    "description": "Allowed Origins (CORS)"
+                  },
+                  "binaryDataFieldName": {
+                    "type": "string",
+                    "description": "Field Name for Binary Data"
+                  },
+                  "ignoreBots": {
+                    "type": "boolean",
+                    "description": "Ignore Bots"
+                  },
+                  "ipAllowlist": {
+                    "type": "string",
+                    "description": "IP(s) Allowlist"
+                  },
+                  "noResponseBody": {
+                    "type": "boolean",
+                    "description": "No Response Body"
+                  },
+                  "rawBody": {
+                    "type": "boolean",
+                    "description": "Raw Body"
+                  },
+                  "responseCode": {
+                    "type": "number",
+                    "description": "Response Code"
+                  },
+                  "responseData": {
+                    "type": "string",
+                    "description": "Response Data"
+                  }
+                },
+                "additionalProperties": false,
+                "default": {},
+                "description": "Options"
+              }
+            },
+            "required": [
+              "path"
+            ],
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          },
+          "fields": [
+            {
+              "name": "path",
+              "displayName": "Path",
+              "type": "string",
+              "default": "",
+              "required": true,
+              "description": "The path to listen on (e.g. \"my-hook\")"
+            },
+            {
+              "name": "method",
+              "displayName": "HTTP Method",
+              "type": "options",
+              "default": "POST",
+              "required": true,
+              "options": [
+                {
+                  "name": "GET",
+                  "value": "GET"
+                },
+                {
+                  "name": "POST",
+                  "value": "POST"
+                },
+                {
+                  "name": "PUT",
+                  "value": "PUT"
+                },
+                {
+                  "name": "DELETE",
+                  "value": "DELETE"
+                },
+                {
+                  "name": "PATCH",
+                  "value": "PATCH"
+                },
+                {
+                  "name": "HEAD",
+                  "value": "HEAD"
+                }
+              ],
+              "description": "HTTP Method to listen for"
+            },
+            {
+              "name": "responseMode",
+              "displayName": "Respond",
+              "type": "options",
+              "default": "lastNode",
+              "required": true,
+              "options": [
+                {
+                  "name": "Immediately",
+                  "value": "onReceived"
+                },
+                {
+                  "name": "When Last Node Finishes",
+                  "value": "lastNode"
+                },
+                {
+                  "name": "Using 'Respond to Webhook' Node",
+                  "value": "respondWithNode"
+                },
+                {
+                  "name": "Streaming",
+                  "value": "streaming"
+                }
+              ],
+              "description": "When to respond to the webhook request"
+            },
+            {
+              "name": "authentication",
+              "displayName": "Authentication",
+              "type": "options",
+              "default": "none",
+              "options": [
+                {
+                  "name": "Basic Auth",
+                  "value": "basicAuth"
+                },
+                {
+                  "name": "Header Auth",
+                  "value": "headerAuth"
+                },
+                {
+                  "name": "JWT Auth",
+                  "value": "jwtAuth"
+                },
+                {
+                  "name": "None",
+                  "value": "none"
+                }
+              ],
+              "description": "The type of authentication to use for incoming webhook requests"
+            },
+            {
+              "name": "sessionSource",
+              "displayName": "Session Source",
+              "type": "options",
+              "default": "none",
+              "options": [
+                {
+                  "name": "None (legacy, no session)",
+                  "value": "none"
+                },
+                {
+                  "name": "Auto (platform issues a session id)",
+                  "value": "auto"
+                },
+                {
+                  "name": "From Header",
+                  "value": "header"
+                },
+                {
+                  "name": "From Cookie",
+                  "value": "cookie"
+                },
+                {
+                  "name": "From Body Field",
+                  "value": "body"
+                }
+              ],
+              "description": "How the platform identifies the caller for per-user session continuity. Required when memory or loops should partition by caller."
+            },
+            {
+              "name": "sessionSourceName",
+              "displayName": "Session Source Name",
+              "type": "string",
+              "default": "",
+              "placeholder": "e.g. X-Caller-Id (header), userId (body field), session_id (cookie)",
+              "description": "Header name, body field path, or cookie name used as the caller id.",
+              "displayOptions": {
+                "show": {
+                  "sessionSource": [
+                    "header",
+                    "cookie",
+                    "body"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "basicAuthUser",
+              "displayName": "User",
+              "type": "string",
+              "default": "",
+              "required": true,
+              "description": "The username for Basic Authentication",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "basicAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "basicAuthPassword",
+              "displayName": "Password",
+              "type": "string",
+              "default": "",
+              "required": true,
+              "typeOptions": {
+                "password": true
+              },
+              "description": "The password for Basic Authentication",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "basicAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "headerAuthName",
+              "displayName": "Name",
+              "type": "string",
+              "default": "",
+              "required": true,
+              "description": "The header name to check for authentication",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "headerAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "headerAuthValue",
+              "displayName": "Value",
+              "type": "string",
+              "default": "",
+              "required": true,
+              "typeOptions": {
+                "password": true
+              },
+              "description": "The expected header value for authentication",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "headerAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "jwtSecret",
+              "displayName": "Secret",
+              "type": "string",
+              "default": "",
+              "required": true,
+              "typeOptions": {
+                "password": true
+              },
+              "description": "The secret key used to verify the JWT token",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "jwtAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "jwtAlgorithm",
+              "displayName": "Algorithm",
+              "type": "options",
+              "default": "HS256",
+              "options": [
+                {
+                  "name": "HS256",
+                  "value": "HS256"
+                },
+                {
+                  "name": "HS384",
+                  "value": "HS384"
+                },
+                {
+                  "name": "HS512",
+                  "value": "HS512"
+                }
+              ],
+              "description": "The algorithm used to sign the JWT token",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "jwtAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "sessionClaim",
+              "displayName": "Session Claim",
+              "type": "string",
+              "default": "sub",
+              "description": "The claim in the JWT payload that identifies the user (e.g. sub, email, userId). Leave blank to skip session tracking.",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "jwtAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "requireRoleCheck",
+              "displayName": "Require Role Check (RBAC)",
+              "type": "boolean",
+              "default": false,
+              "description": "If enabled, the incoming JWT must contain an authorized role claim to execute the workflow.",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "jwtAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "roleClaimKey",
+              "displayName": "Role Claim Key",
+              "type": "string",
+              "default": "role",
+              "description": "The field name inside the JWT payload that contains the user's role (e.g., \"role\", \"groups\").",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "jwtAuth"
+                  ],
+                  "requireRoleCheck": [
+                    true
+                  ]
+                }
+              }
+            },
+            {
+              "name": "allowedRoles",
+              "displayName": "Allowed Roles",
+              "type": "string",
+              "default": "admin, staff",
+              "description": "A comma-separated list of roles that are allowed to trigger this workflow. If empty, all roles pass.",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "jwtAuth"
+                  ],
+                  "requireRoleCheck": [
+                    true
+                  ]
+                }
+              }
+            },
+            {
+              "name": "options",
+              "displayName": "Options",
+              "type": "collection",
+              "default": {},
+              "placeholder": "Add option",
+              "fields": [
+                {
+                  "name": "allowedOrigins",
+                  "displayName": "Allowed Origins (CORS)",
+                  "type": "string",
+                  "default": "*",
+                  "placeholder": "*",
+                  "description": "Comma-separated list of allowed origins for CORS. Use * to allow all origins."
+                },
+                {
+                  "name": "binaryDataFieldName",
+                  "displayName": "Field Name for Binary Data",
+                  "type": "string",
+                  "default": "data",
+                  "placeholder": "data",
+                  "description": "The name of the field in the request that contains binary data (for file uploads)."
+                },
+                {
+                  "name": "ignoreBots",
+                  "displayName": "Ignore Bots",
+                  "type": "boolean",
+                  "default": false,
+                  "description": "If enabled, requests from known bots (crawlers, spiders) will be ignored."
+                },
+                {
+                  "name": "ipAllowlist",
+                  "displayName": "IP(s) Allowlist",
+                  "type": "string",
+                  "default": "",
+                  "placeholder": "e.g. 127.0.0.1, 192.168.1.0/24",
+                  "description": "Comma-separated list of IPs or CIDR ranges. Only these IPs can trigger the webhook."
+                },
+                {
+                  "name": "noResponseBody",
+                  "displayName": "No Response Body",
+                  "type": "boolean",
+                  "default": false,
+                  "description": "If enabled, the webhook will respond with an empty body (only status code)."
+                },
+                {
+                  "name": "rawBody",
+                  "displayName": "Raw Body",
+                  "type": "boolean",
+                  "default": false,
+                  "description": "If enabled, the raw request body will be passed as-is without parsing."
+                },
+                {
+                  "name": "responseData",
+                  "displayName": "Response Data",
+                  "type": "string",
+                  "default": "",
+                  "placeholder": "Response body content",
+                  "description": "Custom response data to return when the webhook is triggered (JSON or text)."
+                }
+              ]
+            }
+          ]
+        },
+        "isTrigger": true,
+        "isFormWait": false,
+        "executionId": "6ac4742d61b262089497a8ce",
+        "isTimerWait": false,
+        "isWebhookWait": false,
+        "connectedHandles": [],
+        "isPrimaryTrigger": true
+      },
+      "type": "webhook",
+      "width": 220,
+      "height": 99,
+      "dragging": false,
+      "position": {
+        "x": 222.7353549831651,
+        "y": 252.71821963451777
+      },
+      "selected": false,
+      "positionAbsolute": {
+        "x": 222.7353549831651,
+        "y": 252.71821963451777
+      }
+    },
+    {
+      "id": "code.execute-1786077970379",
+      "data": {
+        "label": "Code",
+        "inputs": {
+          "code": "// ==========================================\n// ManuMind AI - Chatbot Request Preprocessor\n// Purpose:\n// Extract only the user's message from the\n// webhook request before sending to Gemini.\n// ==========================================\n\n// Get all incoming items\nconst items = $input.all();\n\n// Process each request\nreturn items.map(item => {\n\n    const request = item.json.body;\n\n    return {\n        json: {\n            message: request.message.trim()\n        }\n    };\n\n});",
+          "mode": "all",
+          "path": "Chatbot",
+          "isPublic": false,
+          "language": "javascript",
+          "placeholder": "Type your message...",
+          "allowedRoles": "admin, staff",
+          "jwtAlgorithm": "HS256",
+          "responseMode": "Last Node",
+          "roleClaimKey": "role",
+          "sessionClaim": "sub",
+          "authentication": "none",
+          "requireRoleCheck": false,
+          "requireButtonClick": false,
+          "loadPreviousSession": true
+        },
+        "toolId": "code.execute",
+        "toolData": {
+          "id": "code.execute",
+          "displayName": "Code",
+          "category": "Data  Processing",
+          "provider": "code",
+          "operation": "execute",
+          "icon": "💻",
+          "description": "Execute custom JavaScript or Python code",
+          "inputSchemaJSON": {
+            "type": "object",
+            "properties": {
+              "language": {
+                "type": "string",
+                "enum": [
+                  "javascript",
+                  "python"
+                ],
+                "description": "Programming language to execute"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "all",
+                  "each"
+                ],
+                "default": "all",
+                "description": "Execution mode"
+              },
+              "code": {
+                "type": "string",
+                "description": "Code to execute"
+              },
+              "input": {
+                "description": "Input data available as \"input\" variable"
+              },
+              "context": {
+                "description": "Execution context including other node results"
+              }
+            },
+            "required": [
+              "language",
+              "code"
+            ],
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          }
+        },
+        "isTrigger": false,
+        "isFormWait": false,
+        "executionId": "6ac4742d61b262089497a8ce",
+        "isTimerWait": false,
+        "isWebhookWait": false,
+        "connectedHandles": [],
+        "isPrimaryTrigger": false
+      },
+      "type": "action",
+      "width": 220,
+      "height": 93,
+      "dragging": false,
+      "position": {
+        "x": 645.3650769142515,
+        "y": 330.8274590163105
+      },
+      "selected": false,
+      "positionAbsolute": {
+        "x": 645.3650769142515,
+        "y": 330.8274590163105
+      }
+    },
+    {
+      "id": "llm-agent-execute-1786078118117",
+      "data": {
+        "label": "LLM Node",
+        "inputs": {
+          "model": "gemini-3.1-flash-lite-preview",
+          "provider": "gemini",
+          "question": "You are ManuMind AI, an AI Manufacturing Copilot.\r\n\r\nYour purpose is to help factory managers, supervisors, and production engineers make better manufacturing decisions.\r\n\r\nYou will receive TWO separate inputs.\r\n\r\n--------------------------------------------------\r\nINPUT 1\r\n--------------------------------------------------\r\n\r\n {{$node[\"code.execute-1786077970379\"].json}}\nUser Question\r\n\r\nExample\r\n\r\n{\r\n  \"message\": \"Which machine has the highest downtime today?\"\r\n}\r\n\r\n--------------------------------------------------\r\nINPUT 2\r\n--------------------------------------------------\r\n\r {{$node[\"code.execute-1786078387575\"].json[\"machineData\"]}}\n\nManufacturing Dataset\r\n\r\nThe dataset contains historical and current manufacturing records.\r\n\r\nEach record may contain:\r\n\r\ntimestamp\r\nmachine_id\r\nproduction_line\r\nstatus\r\ncycle_time_sec\r\nunits_produced\r\ndefects\r\ndowntime_min\r\noee_percent\r\navailability_percent\r\nperformance_percent\r\nquality_percent\r\nmaintenance_due_days\r\nshift\r\n\r\n--------------------------------------------------\r\nYOUR TASK\r\n--------------------------------------------------\r\n\r\nRead the user's question carefully.\r\n\r\nAnalyze the manufacturing dataset.\r\n\r\nAnswer ONLY using the information available in the dataset.\r\n\r\nDo not invent machines, production values, schedules, or maintenance information that are not supported by the data.\r\n\r\nWhen calculations are required:\r\n\r\n• Calculate averages.\r\n• Calculate totals.\r\n• Compare machines.\r\n• Find maximum/minimum values.\r\n• Detect trends.\r\n• Identify bottlenecks.\r\n• Summarize operational performance.\r\n\r\nYou can answer questions about:\r\n\r\n• Machine status\r\n• Production output\r\n• Machine utilization\r\n• Downtime\r\n• OEE\r\n• Availability\r\n• Performance\r\n• Quality\r\n• Defects\r\n• Maintenance due\r\n• Production lines\r\n• Shift performance\r\n• Production trends\r\n• Best performing machine\r\n• Worst performing machine\r\n• Idle machines\r\n• Machines under maintenance\r\n• Production efficiency\r\n\r\nIf the user asks for recommendations, provide actionable manufacturing suggestions based on the dataset.\r\n\r\nExamples:\r\n\r\n\"Machine M103 has the highest average OEE. Continue assigning high-priority production to this machine.\"\r\n\r\n\"Machine M104 has experienced frequent downtime. Schedule preventive maintenance.\"\r\n\r\n\"Production Line L2 has the highest defect count. Review quality inspection and process settings.\"\r\n\r\nIf the question requires information that is NOT available in the dataset, clearly state:\r\n\r\n\"I don't have enough data to answer that question.\"\r\n\r\nDo not fabricate answers.\r\n\r\n--------------------------------------------------\r\nRESPONSE STYLE\r\n--------------------------------------------------\r\n\r\nKeep responses concise.\r\n\r\nUse bullet points whenever appropriate.\r\n\r\nWhen mentioning numerical values, include the calculated values.\r\n\r\nIf comparisons are requested, explain why one machine or production line performs better than another.\r\n\r\n--------------------------------------------------\r\nOUTPUT FORMAT\r\n--------------------------------------------------\r\n\r\nReturn ONLY valid JSON.\r\n\r\n{\r\n  \"answer\": \"Natural language answer to the user's question.\",\r\n\r\n  \"keyFindings\": [\r\n    \"\",\r\n    \"\",\r\n    \"\"\r\n  ],\r\n\r\n  \"recommendations\": [\r\n    \"\",\r\n    \"\",\r\n    \"\"\r\n  ]\r\n}",
+          "credentialId": "69562ffd-c93e-49f1-85a5-e1f183a8b358",
+          "promptSource": "define",
+          "systemPrompt": "",
+          "enableFallback": false,
+          "requireSpecificOutputFormat": false
+        },
+        "toolId": "llm-agent-execute",
+        "toolData": {
+          "id": "llm-agent-execute",
+          "displayName": "LLM Node",
+          "category": "AI / LLM",
+          "provider": "llmagent",
+          "operation": "execute",
+          "icon": "smart_toy",
+          "description": "Execute prompts with various LLM models (Gemini, Groq)",
+          "inputSchemaJSON": {
+            "type": "object",
+            "properties": {
+              "systemPrompt": {
+                "type": "string",
+                "default": "",
+                "description": "System prompt or persona that sets behavior (optional, hidden in UI)"
+              },
+              "promptSource": {
+                "type": "string",
+                "enum": [
+                  "connected",
+                  "define"
+                ],
+                "default": "define",
+                "description": "Source for Prompt (User Message)."
+              },
+              "question": {
+                "type": "string",
+                "description": "Prompt (User Message)"
+              },
+              "file": {
+                "type": "string",
+                "description": "Upload File "
+              },
+              "memory": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  },
+                  "config": {}
+                },
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": false,
+                "description": "Conversation memory configuration"
+              },
+              "provider": {
+                "type": "string",
+                "enum": [
+                  "groq",
+                  "gemini",
+                  "openai",
+                  "local"
+                ],
+                "default": "gemini",
+                "description": "The LLM provider to use"
+              },
+              "model": {
+                "type": "string",
+                "description": "The LLM model to use"
+              },
+              "requireSpecificOutputFormat": {
+                "type": "boolean",
+                "default": false,
+                "description": "Whether to require a specific output format"
+              },
+              "outputFormatSchema": {
+                "type": "string",
+                "description": "The schema or description of the required output format (e.g. JSON schema or \"name, age, email\")"
+              },
+              "enableFallback": {
+                "type": "boolean",
+                "default": false,
+                "description": "Whether to auto-retry with a fallback model if the primary fails"
+              },
+              "fallbackModel": {
+                "type": "string",
+                "description": "The fallback model ID to use when the primary model fails"
+              },
+              "temperature": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 2,
+                "description": "Controls how random or creative the output is. Lower values produce more focused and deterministic responses, higher values produce more varied and creative output."
+              },
+              "maxTokens": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 131072,
+                "description": "The maximum number of tokens (words/word-pieces) the model is allowed to generate in its response. Higher values allow longer answers but cost more."
+              },
+              "topK": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "description": "Limits the model to only consider the top K most probable next tokens at each step. Lower values make output more focused, higher values allow more variety."
+              },
+              "credentials": {
+                "type": "object",
+                "properties": {
+                  "apiKey": {
+                    "type": "string",
+                    "description": "API key for the selected LLM provider"
+                  }
+                },
+                "required": [
+                  "apiKey"
+                ],
+                "additionalProperties": false
+              },
+              "userId": {
+                "type": "string",
+                "description": "ID of the user executing the workflow"
+              },
+              "workflowId": {
+                "type": "string",
+                "description": "ID of the current workflow"
+              }
+            },
+            "required": [
+              "credentials"
+            ],
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          },
+          "executionMode": "batch"
+        },
+        "isTrigger": false,
+        "isFormWait": false,
+        "executionId": "6ac4742d61b262089497a8ce",
+        "isTimerWait": false,
+        "isWebhookWait": false,
+        "connectedHandles": [],
+        "isPrimaryTrigger": false
+      },
+      "type": "action",
+      "width": 220,
+      "height": 93,
+      "dragging": false,
+      "position": {
+        "x": 1099.8117143052275,
+        "y": 247.63259300202304
+      },
+      "selected": true,
+      "positionAbsolute": {
+        "x": 1099.8117143052275,
+        "y": 247.63259300202304
+      }
+    },
+    {
+      "id": "mongodb.find_document-1786078149772",
+      "data": {
+        "label": "Find Document",
+        "inputs": {
+          "limit": 200,
+          "database": "machine",
+          "collection": "dataset_1",
+          "credentialId": "46898dea-3b9e-45e5-85f2-6d0b3cd67632"
+        },
+        "toolId": "mongodb.find_document",
+        "toolData": {
+          "id": "mongodb.find_document",
+          "displayName": "Find Document",
+          "category": "Memory & State",
+          "provider": "mongodb",
+          "operation": "find_document",
+          "icon": "https://www.mongodb.com/assets/images/global/favicon.ico",
+          "description": "Retrieve documents from MongoDB collection",
+          "inputSchemaJSON": {
+            "type": "object",
+            "properties": {
+              "connectionUri": {
+                "type": "string",
+                "description": "MongoDB connection URI (overrides credentials)"
+              },
+              "credentials": {
+                "description": "Optional credentials object for project auth flows"
+              },
+              "database": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Database name"
+              },
+              "collection": {
+                "type": "string",
+                "description": "Collection name (optional). Leave empty to search across ALL collections in the database."
+              },
+              "query": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": {}
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "description": "Query filter — must be a valid JSON object. Three modes:\n1. {} — return all documents in the collection.\n2. {\"field\": \"value\"} — standard MongoDB filter.\n3. {\"$search\": \"keyword\"} — search keyword across ALL string fields in every document.\nExample: {\"status\": \"pending\"}"
+              },
+              "limit": {
+                "type": "number",
+                "description": "Maximum number of documents to return (default 1000, max 5000)"
+              },
+              "sort": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": {}
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "description": "Sort order (JSON). Example: {\"createdAt\": -1}"
+              },
+              "skip": {
+                "type": "number",
+                "description": "Number of documents to skip for pagination"
+              },
+              "projection": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": {}
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "description": "Fields to include/exclude (JSON). Example: {\"name\": 1, \"email\": 1}"
+              }
+            },
+            "required": [
+              "database",
+              "query"
+            ],
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          },
+          "executionMode": "batch"
+        },
+        "isTrigger": false,
+        "isFormWait": false,
+        "executionId": "6ac4742d61b262089497a8ce",
+        "isTimerWait": false,
+        "isWebhookWait": false,
+        "connectedHandles": [],
+        "isPrimaryTrigger": false
+      },
+      "type": "action",
+      "width": 220,
+      "height": 93,
+      "dragging": false,
+      "position": {
+        "x": 487.21678286394956,
+        "y": 146.7278767364704
+      },
+      "selected": false,
+      "positionAbsolute": {
+        "x": 487.21678286394956,
+        "y": 146.7278767364704
+      }
+    },
+    {
+      "id": "code.execute-1786078387575",
+      "data": {
+        "label": "Code",
+        "inputs": {
+          "code": "// ==========================================\n// ManuMind AI - Chatbot Data Preprocessor\n// Purpose:\n// Filter MongoDB records and send only the\n// information required by the AI Chatbot.\n// ==========================================\n\n// Get incoming MongoDB response\nconst items = $input.all();\n\n// Get documents\nconst documents = items[0]?.json?.documents || [];\n\n// Extract only useful fields\nconst machineData = documents.map(doc => ({\n    timestamp: doc.timestamp,\n    machine_id: doc.machine_id,\n    production_line: doc.production_line,\n    status: doc.status,\n    cycle_time_sec: Number(doc.cycle_time_sec || 0),\n    units_produced: Number(doc.units_produced || 0),\n    defects: Number(doc.defects || 0),\n    downtime_min: Number(doc.downtime_min || 0),\n    oee_percent: Number(doc.oee_percent || 0),\n    availability_percent: Number(doc.availability_percent || 0),\n    performance_percent: Number(doc.performance_percent || 0),\n    quality_percent: Number(doc.quality_percent || 0),\n    maintenance_due_days: Number(doc.maintenance_due_days || 0),\n    shift: doc.shift\n}));\n\n// Return a single object for Gemini\nreturn [\n    {\n        json: {\n            machineData\n        }\n    }\n];",
+          "limit": 200,
+          "database": "machine",
+          "language": "javascript",
+          "collection": "dataset_1",
+          "credentialId": "46898dea-3b9e-45e5-85f2-6d0b3cd67632"
+        },
+        "toolId": "code.execute",
+        "toolData": {
+          "id": "code.execute",
+          "displayName": "Code",
+          "category": "Data  Processing",
+          "provider": "code",
+          "operation": "execute",
+          "icon": "💻",
+          "description": "Execute custom JavaScript or Python code",
+          "inputSchemaJSON": {
+            "type": "object",
+            "properties": {
+              "language": {
+                "type": "string",
+                "enum": [
+                  "javascript",
+                  "python"
+                ],
+                "description": "Programming language to execute"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "all",
+                  "each"
+                ],
+                "default": "all",
+                "description": "Execution mode"
+              },
+              "code": {
+                "type": "string",
+                "description": "Code to execute"
+              },
+              "input": {
+                "description": "Input data available as \"input\" variable"
+              },
+              "context": {
+                "description": "Execution context including other node results"
+              }
+            },
+            "required": [
+              "language",
+              "code"
+            ],
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          }
+        },
+        "isTrigger": false,
+        "isFormWait": false,
+        "executionId": "6ac4742d61b262089497a8ce",
+        "isTimerWait": false,
+        "isWebhookWait": false,
+        "connectedHandles": [],
+        "isPrimaryTrigger": false
+      },
+      "type": "action",
+      "width": 220,
+      "height": 93,
+      "dragging": false,
+      "position": {
+        "x": 767.6218369965753,
+        "y": 152.1415837985485
+      },
+      "selected": false,
+      "positionAbsolute": {
+        "x": 767.6218369965753,
+        "y": 152.1415837985485
+      }
+    },
+    {
+      "id": "code.execute-1786078478376",
+      "data": {
+        "label": "Code",
+        "inputs": {
+          "code": "// ==========================================\n// ManuMind AI - Chatbot Response Formatter\n// Purpose:\n// Parse Gemini response and send only the\n// chatbot answer to the frontend.\n// ==========================================\n\n// Get incoming items\nconst items = $input.all();\n\n// Parse Gemini response\nconst ai = JSON.parse(items[0].json.response);\n\n// Return only the chatbot answer\nreturn [\n{\n    json: {\n        answer: ai.answer\n    }\n}\n];",
+          "mode": "all",
+          "model": "gemini-3.1-flash-lite-preview",
+          "language": "javascript",
+          "provider": "gemini",
+          "question": "You are ManuMind AI, an AI Manufacturing Copilot.\r\n\r\nYour purpose is to help factory managers, supervisors, and production engineers make better manufacturing decisions.\r\n\r\nYou will receive TWO separate inputs.\r\n\r\n--------------------------------------------------\r\nINPUT 1\r\n--------------------------------------------------\r\n\r\n {{$node[\"code.execute-1786077970379\"].json}}\nUser Question\r\n\r\nExample\r\n\r\n{\r\n  \"message\": \"Which machine has the highest downtime today?\"\r\n}\r\n\r\n--------------------------------------------------\r\nINPUT 2\r\n--------------------------------------------------\r\n\r {{$node[\"code.execute-1786078387575\"].json[\"machineData\"]}}\n\nManufacturing Dataset\r\n\r\nThe dataset contains historical and current manufacturing records.\r\n\r\nEach record may contain:\r\n\r\ntimestamp\r\nmachine_id\r\nproduction_line\r\nstatus\r\ncycle_time_sec\r\nunits_produced\r\ndefects\r\ndowntime_min\r\noee_percent\r\navailability_percent\r\nperformance_percent\r\nquality_percent\r\nmaintenance_due_days\r\nshift\r\n\r\n--------------------------------------------------\r\nYOUR TASK\r\n--------------------------------------------------\r\n\r\nRead the user's question carefully.\r\n\r\nAnalyze the manufacturing dataset.\r\n\r\nAnswer ONLY using the information available in the dataset.\r\n\r\nDo not invent machines, production values, schedules, or maintenance information that are not supported by the data.\r\n\r\nWhen calculations are required:\r\n\r\n• Calculate averages.\r\n• Calculate totals.\r\n• Compare machines.\r\n• Find maximum/minimum values.\r\n• Detect trends.\r\n• Identify bottlenecks.\r\n• Summarize operational performance.\r\n\r\nYou can answer questions about:\r\n\r\n• Machine status\r\n• Production output\r\n• Machine utilization\r\n• Downtime\r\n• OEE\r\n• Availability\r\n• Performance\r\n• Quality\r\n• Defects\r\n• Maintenance due\r\n• Production lines\r\n• Shift performance\r\n• Production trends\r\n• Best performing machine\r\n• Worst performing machine\r\n• Idle machines\r\n• Machines under maintenance\r\n• Production efficiency\r\n\r\nIf the user asks for recommendations, provide actionable manufacturing suggestions based on the dataset.\r\n\r\nExamples:\r\n\r\n\"Machine M103 has the highest average OEE. Continue assigning high-priority production to this machine.\"\r\n\r\n\"Machine M104 has experienced frequent downtime. Schedule preventive maintenance.\"\r\n\r\n\"Production Line L2 has the highest defect count. Review quality inspection and process settings.\"\r\n\r\nIf the question requires information that is NOT available in the dataset, clearly state:\r\n\r\n\"I don't have enough data to answer that question.\"\r\n\r\nDo not fabricate answers.\r\n\r\n--------------------------------------------------\r\nRESPONSE STYLE\r\n--------------------------------------------------\r\n\r\nKeep responses concise.\r\n\r\nUse bullet points whenever appropriate.\r\n\r\nWhen mentioning numerical values, include the calculated values.\r\n\r\nIf comparisons are requested, explain why one machine or production line performs better than another.\r\n\r\n--------------------------------------------------\r\nOUTPUT FORMAT\r\n--------------------------------------------------\r\n\r\nReturn ONLY valid JSON.\r\n\r\n{\r\n  \"answer\": \"Natural language answer to the user's question.\",\r\n\r\n  \"keyFindings\": [\r\n    \"\",\r\n    \"\",\r\n    \"\"\r\n  ],\r\n\r\n  \"recommendations\": [\r\n    \"\",\r\n    \"\",\r\n    \"\"\r\n  ]\r\n}",
+          "credentialId": "69562ffd-c93e-49f1-85a5-e1f183a8b358",
+          "promptSource": "define",
+          "systemPrompt": "",
+          "enableFallback": false,
+          "requireSpecificOutputFormat": false
+        },
+        "toolId": "code.execute",
+        "toolData": {
+          "id": "code.execute",
+          "displayName": "Code",
+          "category": "Data  Processing",
+          "provider": "code",
+          "operation": "execute",
+          "icon": "💻",
+          "description": "Execute custom JavaScript or Python code",
+          "inputSchemaJSON": {
+            "type": "object",
+            "properties": {
+              "language": {
+                "type": "string",
+                "enum": [
+                  "javascript",
+                  "python"
+                ],
+                "description": "Programming language to execute"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "all",
+                  "each"
+                ],
+                "default": "all",
+                "description": "Execution mode"
+              },
+              "code": {
+                "type": "string",
+                "description": "Code to execute"
+              },
+              "input": {
+                "description": "Input data available as \"input\" variable"
+              },
+              "context": {
+                "description": "Execution context including other node results"
+              }
+            },
+            "required": [
+              "language",
+              "code"
+            ],
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          }
+        },
+        "isTrigger": false,
+        "isFormWait": false,
+        "executionId": "6ac4742d61b262089497a8ce",
+        "isTimerWait": false,
+        "isWebhookWait": false,
+        "connectedHandles": [],
+        "isPrimaryTrigger": false
+      },
+      "type": "action",
+      "width": 220,
+      "height": 93,
+      "dragging": false,
+      "position": {
+        "x": 1410.5397387801343,
+        "y": 255.66089539412235
+      },
+      "selected": false,
+      "positionAbsolute": {
+        "x": 1410.5397387801343,
+        "y": 255.66089539412235
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "reactflow__edge-webhook-1786077587392-code.execute-1786077970379",
+      "data": {},
+      "type": "custom",
+      "source": "webhook-1786077587392",
+      "target": "code.execute-1786077970379"
+    },
+    {
+      "id": "reactflow__edge-code.execute-1786077970379-llm-agent-execute-1786078118117",
+      "data": {},
+      "type": "custom",
+      "source": "code.execute-1786077970379",
+      "target": "llm-agent-execute-1786078118117"
+    },
+    {
+      "id": "reactflow__edge-webhook-1786077587392-mongodb.find_document-1786078149772",
+      "data": {},
+      "type": "custom",
+      "source": "webhook-1786077587392",
+      "target": "mongodb.find_document-1786078149772"
+    },
+    {
+      "id": "reactflow__edge-mongodb.find_document-1786078149772-code.execute-1786078387575",
+      "data": {},
+      "type": "custom",
+      "source": "mongodb.find_document-1786078149772",
+      "target": "code.execute-1786078387575"
+    },
+    {
+      "id": "reactflow__edge-code.execute-1786078387575-llm-agent-execute-1786078118117",
+      "data": {},
+      "type": "custom",
+      "source": "code.execute-1786078387575",
+      "target": "llm-agent-execute-1786078118117"
+    },
+    {
+      "id": "reactflow__edge-llm-agent-execute-1786078118117-code.execute-1786078478376",
+      "data": {},
+      "type": "custom",
+      "source": "llm-agent-execute-1786078118117",
+      "target": "code.execute-1786078478376"
+    }
+  ]
+}

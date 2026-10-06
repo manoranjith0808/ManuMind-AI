@@ -1,0 +1,1164 @@
+{
+  "_platform": "agentbuilder",
+  "_version": 1,
+  "_exportedAt": "2026-10-06T04:44:56.110Z",
+  "_fingerprint": "YWN0aW9uOmNvZGUuZXhlY3V0ZXxhY3Rpb246Y29kZS5leGVjdXRlfGFjdGlvbjpj",
+  "nodes": [
+    {
+      "id": "webhook-1785988921039",
+      "data": {
+        "label": "Webhook Trigger",
+        "inputs": {
+          "path": "scheduler",
+          "method": "POST",
+          "options": {},
+          "allowedRoles": "admin, staff",
+          "jwtAlgorithm": "HS256",
+          "responseMode": "lastNode",
+          "roleClaimKey": "role",
+          "sessionClaim": "sub",
+          "sessionSource": "none",
+          "authentication": "none",
+          "requireRoleCheck": false
+        },
+        "toolId": "webhook",
+        "toolData": {
+          "id": "webhook",
+          "displayName": "Webhook Trigger",
+          "category": "Input /  Output",
+          "icon": "webhook",
+          "description": "Trigger workflow via webhook",
+          "inputSchemaJSON": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "The path to listen on (e.g. \"my-hook\")"
+              },
+              "method": {
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "POST",
+                  "PUT",
+                  "DELETE",
+                  "PATCH",
+                  "HEAD"
+                ],
+                "default": "POST",
+                "description": "HTTP Method"
+              },
+              "responseMode": {
+                "type": "string",
+                "enum": [
+                  "onReceived",
+                  "lastNode",
+                  "respondWithNode",
+                  "streaming"
+                ],
+                "default": "lastNode",
+                "description": "When to respond"
+              },
+              "authentication": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "basicAuth",
+                  "headerAuth",
+                  "jwtAuth"
+                ],
+                "default": "none",
+                "description": "Authentication"
+              },
+              "basicAuthUser": {
+                "type": "string",
+                "description": "Username"
+              },
+              "basicAuthPassword": {
+                "type": "string",
+                "description": "Password"
+              },
+              "headerAuthName": {
+                "type": "string",
+                "description": "Name"
+              },
+              "headerAuthValue": {
+                "type": "string",
+                "description": "Value"
+              },
+              "jwtSecret": {
+                "type": "string",
+                "description": "Secret"
+              },
+              "jwtAlgorithm": {
+                "type": "string",
+                "enum": [
+                  "HS256",
+                  "HS384",
+                  "HS512"
+                ],
+                "default": "HS256",
+                "description": "Algorithm"
+              },
+              "sessionClaim": {
+                "type": "string",
+                "default": "sub",
+                "description": "JWT claim used to identify the session"
+              },
+              "requireRoleCheck": {
+                "type": "boolean",
+                "default": false,
+                "description": "Require Role Check (RBAC)"
+              },
+              "roleClaimKey": {
+                "type": "string",
+                "default": "role",
+                "description": "Role Claim Key"
+              },
+              "allowedRoles": {
+                "type": "string",
+                "default": "admin, staff",
+                "description": "Allowed Roles (comma separated)"
+              },
+              "sessionSource": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "auto",
+                  "header",
+                  "cookie",
+                  "body"
+                ],
+                "default": "none",
+                "description": "Session Source"
+              },
+              "sessionSourceName": {
+                "type": "string",
+                "description": "Session Source Name (header / cookie / body field)"
+              },
+              "options": {
+                "type": "object",
+                "properties": {
+                  "allowedOrigins": {
+                    "type": "string",
+                    "description": "Allowed Origins (CORS)"
+                  },
+                  "binaryDataFieldName": {
+                    "type": "string",
+                    "description": "Field Name for Binary Data"
+                  },
+                  "ignoreBots": {
+                    "type": "boolean",
+                    "description": "Ignore Bots"
+                  },
+                  "ipAllowlist": {
+                    "type": "string",
+                    "description": "IP(s) Allowlist"
+                  },
+                  "noResponseBody": {
+                    "type": "boolean",
+                    "description": "No Response Body"
+                  },
+                  "rawBody": {
+                    "type": "boolean",
+                    "description": "Raw Body"
+                  },
+                  "responseCode": {
+                    "type": "number",
+                    "description": "Response Code"
+                  },
+                  "responseData": {
+                    "type": "string",
+                    "description": "Response Data"
+                  }
+                },
+                "additionalProperties": false,
+                "default": {},
+                "description": "Options"
+              }
+            },
+            "required": [
+              "path"
+            ],
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          },
+          "fields": [
+            {
+              "name": "path",
+              "displayName": "Path",
+              "type": "string",
+              "default": "",
+              "required": true,
+              "description": "The path to listen on (e.g. \"my-hook\")"
+            },
+            {
+              "name": "method",
+              "displayName": "HTTP Method",
+              "type": "options",
+              "default": "POST",
+              "required": true,
+              "options": [
+                {
+                  "name": "GET",
+                  "value": "GET"
+                },
+                {
+                  "name": "POST",
+                  "value": "POST"
+                },
+                {
+                  "name": "PUT",
+                  "value": "PUT"
+                },
+                {
+                  "name": "DELETE",
+                  "value": "DELETE"
+                },
+                {
+                  "name": "PATCH",
+                  "value": "PATCH"
+                },
+                {
+                  "name": "HEAD",
+                  "value": "HEAD"
+                }
+              ],
+              "description": "HTTP Method to listen for"
+            },
+            {
+              "name": "responseMode",
+              "displayName": "Respond",
+              "type": "options",
+              "default": "lastNode",
+              "required": true,
+              "options": [
+                {
+                  "name": "Immediately",
+                  "value": "onReceived"
+                },
+                {
+                  "name": "When Last Node Finishes",
+                  "value": "lastNode"
+                },
+                {
+                  "name": "Using 'Respond to Webhook' Node",
+                  "value": "respondWithNode"
+                },
+                {
+                  "name": "Streaming",
+                  "value": "streaming"
+                }
+              ],
+              "description": "When to respond to the webhook request"
+            },
+            {
+              "name": "authentication",
+              "displayName": "Authentication",
+              "type": "options",
+              "default": "none",
+              "options": [
+                {
+                  "name": "Basic Auth",
+                  "value": "basicAuth"
+                },
+                {
+                  "name": "Header Auth",
+                  "value": "headerAuth"
+                },
+                {
+                  "name": "JWT Auth",
+                  "value": "jwtAuth"
+                },
+                {
+                  "name": "None",
+                  "value": "none"
+                }
+              ],
+              "description": "The type of authentication to use for incoming webhook requests"
+            },
+            {
+              "name": "sessionSource",
+              "displayName": "Session Source",
+              "type": "options",
+              "default": "none",
+              "options": [
+                {
+                  "name": "None (legacy, no session)",
+                  "value": "none"
+                },
+                {
+                  "name": "Auto (platform issues a session id)",
+                  "value": "auto"
+                },
+                {
+                  "name": "From Header",
+                  "value": "header"
+                },
+                {
+                  "name": "From Cookie",
+                  "value": "cookie"
+                },
+                {
+                  "name": "From Body Field",
+                  "value": "body"
+                }
+              ],
+              "description": "How the platform identifies the caller for per-user session continuity. Required when memory or loops should partition by caller."
+            },
+            {
+              "name": "sessionSourceName",
+              "displayName": "Session Source Name",
+              "type": "string",
+              "default": "",
+              "placeholder": "e.g. X-Caller-Id (header), userId (body field), session_id (cookie)",
+              "description": "Header name, body field path, or cookie name used as the caller id.",
+              "displayOptions": {
+                "show": {
+                  "sessionSource": [
+                    "header",
+                    "cookie",
+                    "body"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "basicAuthUser",
+              "displayName": "User",
+              "type": "string",
+              "default": "",
+              "required": true,
+              "description": "The username for Basic Authentication",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "basicAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "basicAuthPassword",
+              "displayName": "Password",
+              "type": "string",
+              "default": "",
+              "required": true,
+              "typeOptions": {
+                "password": true
+              },
+              "description": "The password for Basic Authentication",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "basicAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "headerAuthName",
+              "displayName": "Name",
+              "type": "string",
+              "default": "",
+              "required": true,
+              "description": "The header name to check for authentication",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "headerAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "headerAuthValue",
+              "displayName": "Value",
+              "type": "string",
+              "default": "",
+              "required": true,
+              "typeOptions": {
+                "password": true
+              },
+              "description": "The expected header value for authentication",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "headerAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "jwtSecret",
+              "displayName": "Secret",
+              "type": "string",
+              "default": "",
+              "required": true,
+              "typeOptions": {
+                "password": true
+              },
+              "description": "The secret key used to verify the JWT token",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "jwtAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "jwtAlgorithm",
+              "displayName": "Algorithm",
+              "type": "options",
+              "default": "HS256",
+              "options": [
+                {
+                  "name": "HS256",
+                  "value": "HS256"
+                },
+                {
+                  "name": "HS384",
+                  "value": "HS384"
+                },
+                {
+                  "name": "HS512",
+                  "value": "HS512"
+                }
+              ],
+              "description": "The algorithm used to sign the JWT token",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "jwtAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "sessionClaim",
+              "displayName": "Session Claim",
+              "type": "string",
+              "default": "sub",
+              "description": "The claim in the JWT payload that identifies the user (e.g. sub, email, userId). Leave blank to skip session tracking.",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "jwtAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "requireRoleCheck",
+              "displayName": "Require Role Check (RBAC)",
+              "type": "boolean",
+              "default": false,
+              "description": "If enabled, the incoming JWT must contain an authorized role claim to execute the workflow.",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "jwtAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "roleClaimKey",
+              "displayName": "Role Claim Key",
+              "type": "string",
+              "default": "role",
+              "description": "The field name inside the JWT payload that contains the user's role (e.g., \"role\", \"groups\").",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "jwtAuth"
+                  ],
+                  "requireRoleCheck": [
+                    true
+                  ]
+                }
+              }
+            },
+            {
+              "name": "allowedRoles",
+              "displayName": "Allowed Roles",
+              "type": "string",
+              "default": "admin, staff",
+              "description": "A comma-separated list of roles that are allowed to trigger this workflow. If empty, all roles pass.",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "jwtAuth"
+                  ],
+                  "requireRoleCheck": [
+                    true
+                  ]
+                }
+              }
+            },
+            {
+              "name": "options",
+              "displayName": "Options",
+              "type": "collection",
+              "default": {},
+              "placeholder": "Add option",
+              "fields": [
+                {
+                  "name": "allowedOrigins",
+                  "displayName": "Allowed Origins (CORS)",
+                  "type": "string",
+                  "default": "*",
+                  "placeholder": "*",
+                  "description": "Comma-separated list of allowed origins for CORS. Use * to allow all origins."
+                },
+                {
+                  "name": "binaryDataFieldName",
+                  "displayName": "Field Name for Binary Data",
+                  "type": "string",
+                  "default": "data",
+                  "placeholder": "data",
+                  "description": "The name of the field in the request that contains binary data (for file uploads)."
+                },
+                {
+                  "name": "ignoreBots",
+                  "displayName": "Ignore Bots",
+                  "type": "boolean",
+                  "default": false,
+                  "description": "If enabled, requests from known bots (crawlers, spiders) will be ignored."
+                },
+                {
+                  "name": "ipAllowlist",
+                  "displayName": "IP(s) Allowlist",
+                  "type": "string",
+                  "default": "",
+                  "placeholder": "e.g. 127.0.0.1, 192.168.1.0/24",
+                  "description": "Comma-separated list of IPs or CIDR ranges. Only these IPs can trigger the webhook."
+                },
+                {
+                  "name": "noResponseBody",
+                  "displayName": "No Response Body",
+                  "type": "boolean",
+                  "default": false,
+                  "description": "If enabled, the webhook will respond with an empty body (only status code)."
+                },
+                {
+                  "name": "rawBody",
+                  "displayName": "Raw Body",
+                  "type": "boolean",
+                  "default": false,
+                  "description": "If enabled, the raw request body will be passed as-is without parsing."
+                },
+                {
+                  "name": "responseData",
+                  "displayName": "Response Data",
+                  "type": "string",
+                  "default": "",
+                  "placeholder": "Response body content",
+                  "description": "Custom response data to return when the webhook is triggered (JSON or text)."
+                }
+              ]
+            }
+          ]
+        },
+        "isTrigger": true,
+        "isFormWait": false,
+        "executionId": "6ab0d301dc837fd45f427165",
+        "isTimerWait": false,
+        "isWebhookWait": false,
+        "connectedHandles": [],
+        "isPrimaryTrigger": true
+      },
+      "type": "webhook",
+      "width": 220,
+      "height": 99,
+      "dragging": false,
+      "position": {
+        "x": 353.4077470506411,
+        "y": 178.51117214375176
+      },
+      "selected": false,
+      "positionAbsolute": {
+        "x": 353.4077470506411,
+        "y": 178.51117214375176
+      }
+    },
+    {
+      "id": "code.execute-1786000828167",
+      "data": {
+        "label": "Code",
+        "inputs": {
+          "code": "// ==========================================\n// ManuMind AI - Schedule Request Preprocessor\n// Purpose:\n// Extract scheduling inputs from the webhook\n// and prepare them for the AI Scheduler.\n// ==========================================\n\n// Get all incoming items\nconst items = $input.all();\n\n// Process each request\nreturn items.map(item => {\n\n    const request = item.json.body;\n\n    return {\n        json: {\n            productionTarget: Number(request.production_target),\n\n            productType: request.product_type,\n\n            startTime: request.start_time,\n\n            deliveryDeadline: request.delivery_deadline,\n\n            availableMachines: request.available_machines,\n\n            activeShifts: request.active_shifts\n        }\n    };\n\n});",
+          "mode": "all",
+          "path": "scheduler",
+          "method": "POST",
+          "options": {},
+          "language": "javascript",
+          "allowedRoles": "admin, staff",
+          "jwtAlgorithm": "HS256",
+          "responseMode": "lastNode",
+          "roleClaimKey": "role",
+          "sessionClaim": "sub",
+          "sessionSource": "none",
+          "authentication": "none",
+          "requireRoleCheck": false
+        },
+        "toolId": "code.execute",
+        "toolData": {
+          "id": "code.execute",
+          "displayName": "Code",
+          "category": "Data  Processing",
+          "provider": "code",
+          "operation": "execute",
+          "icon": "💻",
+          "description": "Execute custom JavaScript or Python code",
+          "inputSchemaJSON": {
+            "type": "object",
+            "properties": {
+              "language": {
+                "type": "string",
+                "enum": [
+                  "javascript",
+                  "python"
+                ],
+                "description": "Programming language to execute"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "all",
+                  "each"
+                ],
+                "default": "all",
+                "description": "Execution mode"
+              },
+              "code": {
+                "type": "string",
+                "description": "Code to execute"
+              },
+              "input": {
+                "description": "Input data available as \"input\" variable"
+              },
+              "context": {
+                "description": "Execution context including other node results"
+              }
+            },
+            "required": [
+              "language",
+              "code"
+            ],
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          }
+        },
+        "isTrigger": false,
+        "isFormWait": false,
+        "executionId": "6ab0d301dc837fd45f427165",
+        "isTimerWait": false,
+        "isWebhookWait": false,
+        "connectedHandles": [],
+        "isPrimaryTrigger": false
+      },
+      "type": "action",
+      "width": 220,
+      "height": 93,
+      "dragging": false,
+      "position": {
+        "x": 880.051638787039,
+        "y": 228.7846117964216
+      },
+      "selected": false,
+      "positionAbsolute": {
+        "x": 880.051638787039,
+        "y": 228.7846117964216
+      }
+    },
+    {
+      "id": "llm-agent-execute-1786011445278",
+      "data": {
+        "label": "LLM Node",
+        "inputs": {
+          "model": "gemini-3.1-flash-lite-preview",
+          "provider": "gemini",
+          "question": "You are ManuMind AI's Production Scheduling Agent.\r\n\r\nYou are an AI Manufacturing Planner responsible for creating realistic, capacity-aware production schedules.\r\n\r\nYou must NEVER assume that the requested production target is achievable.\r\n\r\nYour first responsibility is to determine whether the factory has sufficient production capacity before creating a schedule.\r\n\r\n-------------------------------------------------------\r\n\r\nINPUT 1\r\n\r {{$node[\"code.execute-1786000828167\"].json}}\n\nProduction Request\r\n\r\nExample\r\n\r\n{\r\n  \"productionTarget\": 2000,\r\n  \"productType\":\"Product A\",\r\n  \"scheduleStartTime\":\"2026-08-07T12:00\",\r\n  \"deliveryDeadline\":\"2026-08-07T17:30\",\r\n  \"availableMachines\":[\r\n      \"M102\",\r\n      \"M104\",\r\n      \"M105\"\r\n  ],\r\n  \"activeShifts\":[\r\n      \"morning\",\r\n      \"afternoon\",\r\n      \"night\"\r\n  ]\r\n}\r\n\r\n-------------------------------------------------------\r\n\r\nINPUT 2\r\n\r {{$node[\"code.execute-1786013072080\"].json[\"machineSummary\"]}}\n\nMachine Summary from Database\r\n\r\nEach machine contains\r\n\r\nmachine_id\r\n\r\navg_units_per_record\r\n\r\navg_cycle_time_sec\r\n\r\navg_downtime_min\r\n\r\navg_oee_percent\r\n\r\nrunning_percentage\r\n\r\nmaintenance_percentage\r\n\r\nmaintenance_due_days\r\n\r\nThese values represent the historical capability of each machine.\r\n\r\n-------------------------------------------------------\r\n\r\nSTEP 1\r\n\r\nFilter the machine database.\r\n\r\nUse ONLY the machines present in availableMachines.\r\n\r\nIgnore every other machine.\r\n\r\n-------------------------------------------------------\r\n\r\nSTEP 2\r\n\r\nDetermine Actual Machine Capacity.\r\n\r\nFor every machine estimate\r\n\r\nUnits Per Hour\r\n\r\nFormula\r\n\r\nUnits Per Hour =\r\n(avg_units_per_record × 3600)\r\n/ avg_cycle_time_sec\r\n\r\nThen adjust this capacity using\r\n\r\n• OEE\r\n\r\n• Running Percentage\r\n\r\n• Downtime\r\n\r\n• Maintenance Due\r\n\r\nMachines with\r\n\r\nhigh downtime\r\n\r\nlow OEE\r\n\r\nmaintenance due very soon\r\n\r\nshould have reduced usable capacity.\r\n\r\n-------------------------------------------------------\r\n\r\nSTEP 3\r\n\r\nCalculate Available Production Window.\r\n\r\nAvailable Hours =\r\nDifference between\r\n\r\nscheduleStartTime\r\n\r\nand\r\n\r\ndeliveryDeadline\r\n\r\nIf there are multiple shifts,\r\n\r\nconsider only the requested active shifts.\r\n\r\n-------------------------------------------------------\r\n\r\nSTEP 4\r\n\r\nCalculate Maximum Possible Production.\r\n\r\nFor every machine\r\n\r\nMachine Capacity =\r\nAdjusted Units Per Hour × Available Hours\r\n\r\nTotal Factory Capacity =\r\nSum of all Machine Capacities\r\n\r\n-------------------------------------------------------\r\n\r\nSTEP 5\r\n\r\nCapacity Feasibility Check\r\n\r\nIF\r\n\r\nTotal Factory Capacity\r\n>=\r\nProduction Target\r\n\r\nTHEN\r\n\r\nCreate an optimized schedule.\r\n\r\nELSE\r\n\r\nDO NOT fabricate a schedule.\r\n\r\nInstead\r\n\r\nAllocate every machine at maximum realistic capacity.\r\n\r\nCalculate\r\n\r\nMaximum Achievable Production\r\n\r\nRemaining Units\r\n\r\nProduction Shortfall\r\n\r\nAdditional Hours Required\r\n\r\nor\r\n\r\nAdditional Machines Required.\r\n\r\nClearly state that the requested target cannot be achieved before the deadline.\r\n\r\n-------------------------------------------------------\r\n\r\nSTEP 6\r\n\r\nIf feasible\r\n\r\nCreate the production schedule.\r\n\r\nOptimize using\r\n\r\nHighest OEE\r\n\r\nLowest Downtime\r\n\r\nHighest Capacity\r\n\r\nBalanced Machine Utilization\r\n\r\nShortest Cycle Time\r\n\r\nMaintenance Constraints\r\n\r\nRequested Shifts Only\r\n\r\n-------------------------------------------------------\r\n\r\nFor every machine determine\r\n\r\nMachine\r\n\r\nAllocated Units\r\n\r\nUnits Per Hour\r\n\r\nShift\r\n\r\nStart Time\r\n\r\nEnd Time\r\n\r\nEstimated Hours\r\n\r\nReason\r\n\r\n-------------------------------------------------------\r\n\r\nSTEP 7\r\n\r\nGenerate Insights\r\n\r\nExamples\r\n\r\nMachine M102 has highest effective production capacity.\r\n\r\nMachine M104 should receive less work due to lower OEE.\r\n\r\nCurrent factory capacity is insufficient for requested demand.\r\n\r\nProduction target can be achieved with two additional hours.\r\n\r\nAdding one more machine will satisfy the order.\r\n\r\n-------------------------------------------------------\r\n\r\nReturn ONLY JSON.\r\n\r\nNo explanation.\r\n\r\nNo markdown.\r\n\r\n-------------------------------------------------------\r\n\r\nReturn exactly this format\r\n\r\n{\r\n  \"summary\":{\r\n\r\n      \"productionTarget\":0,\r\n\r\n      \"maximumPossibleProduction\":0,\r\n\r\n      \"remainingUnits\":0,\r\n\r\n      \"estimatedCompletion\":\"\",\r\n\r\n      \"deadline\":\"\",\r\n\r\n      \"deadlineStatus\":\"On Track\",\r\n\r\n      \"capacityStatus\":\"Feasible\",\r\n\r\n      \"totalMachinesUsed\":0,\r\n\r\n      \"estimatedDurationHours\":0\r\n  },\r\n\r\n  \"machineAnalysis\":[\r\n      {\r\n          \"machine\":\"\",\r\n          \"unitsPerHour\":0,\r\n          \"maximumCapacity\":0,\r\n          \"averageOEE\":0,\r\n          \"averageDowntime\":0,\r\n          \"utilization\":0,\r\n          \"reliability\":\"\"\r\n      }\r\n  ],\r\n\r\n  \"schedule\":[\r\n      {\r\n          \"machine\":\"\",\r\n          \"shift\":\"\",\r\n          \"unitsPerHour\":0,\r\n          \"allocatedUnits\":0,\r\n          \"startTime\":\"\",\r\n          \"endTime\":\"\",\r\n          \"estimatedHours\":0,\r\n          \"reason\":\"\"\r\n      }\r\n  ],\r\n\r\n  \"insights\":[\r\n      \"\",\r\n      \"\",\r\n      \"\"\r\n  ]\r\n}\r\n\r\n-------------------------------------------------------\r\n\r\nScheduling Rules\r\n\r\nNever exceed the calculated production capacity of any machine.\r\n\r\nNever assign work beyond the available production window.\r\n\r\nNever assign unavailable machines.\r\n\r\nAllocated Units must never exceed\r\n\r\nUnits Per Hour × Available Hours.\r\n\r\nIf capacity is insufficient,\r\n\r\nstate exactly how many units can realistically be produced.\r\n\r\nNever invent un realistic production numbers.\r\n\r\nAlways base scheduling on historical machine performance.\r\n\r\nReturn only valid JSON.",
+          "credentialId": "69562ffd-c93e-49f1-85a5-e1f183a8b358",
+          "promptSource": "define",
+          "systemPrompt": "",
+          "enableFallback": false,
+          "requireSpecificOutputFormat": false
+        },
+        "toolId": "llm-agent-execute",
+        "toolData": {
+          "id": "llm-agent-execute",
+          "displayName": "LLM Node",
+          "category": "AI / LLM",
+          "provider": "llmagent",
+          "operation": "execute",
+          "icon": "smart_toy",
+          "description": "Execute prompts with various LLM models (Gemini, Groq)",
+          "inputSchemaJSON": {
+            "type": "object",
+            "properties": {
+              "systemPrompt": {
+                "type": "string",
+                "default": "",
+                "description": "System prompt or persona that sets behavior (optional, hidden in UI)"
+              },
+              "promptSource": {
+                "type": "string",
+                "enum": [
+                  "connected",
+                  "define"
+                ],
+                "default": "define",
+                "description": "Source for Prompt (User Message)."
+              },
+              "question": {
+                "type": "string",
+                "description": "Prompt (User Message)"
+              },
+              "file": {
+                "type": "string",
+                "description": "Upload File "
+              },
+              "memory": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  },
+                  "config": {}
+                },
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": false,
+                "description": "Conversation memory configuration"
+              },
+              "provider": {
+                "type": "string",
+                "enum": [
+                  "groq",
+                  "gemini",
+                  "openai",
+                  "local"
+                ],
+                "default": "gemini",
+                "description": "The LLM provider to use"
+              },
+              "model": {
+                "type": "string",
+                "description": "The LLM model to use"
+              },
+              "requireSpecificOutputFormat": {
+                "type": "boolean",
+                "default": false,
+                "description": "Whether to require a specific output format"
+              },
+              "outputFormatSchema": {
+                "type": "string",
+                "description": "The schema or description of the required output format (e.g. JSON schema or \"name, age, email\")"
+              },
+              "enableFallback": {
+                "type": "boolean",
+                "default": false,
+                "description": "Whether to auto-retry with a fallback model if the primary fails"
+              },
+              "fallbackModel": {
+                "type": "string",
+                "description": "The fallback model ID to use when the primary model fails"
+              },
+              "temperature": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 2,
+                "description": "Controls how random or creative the output is. Lower values produce more focused and deterministic responses, higher values produce more varied and creative output."
+              },
+              "maxTokens": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 131072,
+                "description": "The maximum number of tokens (words/word-pieces) the model is allowed to generate in its response. Higher values allow longer answers but cost more."
+              },
+              "topK": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "description": "Limits the model to only consider the top K most probable next tokens at each step. Lower values make output more focused, higher values allow more variety."
+              },
+              "credentials": {
+                "type": "object",
+                "properties": {
+                  "apiKey": {
+                    "type": "string",
+                    "description": "API key for the selected LLM provider"
+                  }
+                },
+                "required": [
+                  "apiKey"
+                ],
+                "additionalProperties": false
+              },
+              "userId": {
+                "type": "string",
+                "description": "ID of the user executing the workflow"
+              },
+              "workflowId": {
+                "type": "string",
+                "description": "ID of the current workflow"
+              }
+            },
+            "required": [
+              "credentials"
+            ],
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          },
+          "executionMode": "batch"
+        },
+        "isTrigger": false,
+        "isFormWait": false,
+        "executionId": "6ab0d301dc837fd45f427165",
+        "isTimerWait": false,
+        "isWebhookWait": false,
+        "connectedHandles": [],
+        "isPrimaryTrigger": false
+      },
+      "type": "action",
+      "width": 220,
+      "height": 93,
+      "dragging": false,
+      "position": {
+        "x": 1451.1578063184288,
+        "y": 170.05990765413674
+      },
+      "selected": false,
+      "positionAbsolute": {
+        "x": 1451.1578063184288,
+        "y": 170.05990765413674
+      }
+    },
+    {
+      "id": "mongodb.find_document-1786012206785",
+      "data": {
+        "label": "Find Document",
+        "inputs": {
+          "limit": 200,
+          "database": "machine",
+          "collection": "dataset_1",
+          "credentialId": "46898dea-3b9e-45e5-85f2-6d0b3cd67632"
+        },
+        "toolId": "mongodb.find_document",
+        "toolData": {
+          "id": "mongodb.find_document",
+          "displayName": "Find Document",
+          "category": "Memory & State",
+          "provider": "mongodb",
+          "operation": "find_document",
+          "icon": "https://www.mongodb.com/assets/images/global/favicon.ico",
+          "description": "Retrieve documents from MongoDB collection",
+          "inputSchemaJSON": {
+            "type": "object",
+            "properties": {
+              "connectionUri": {
+                "type": "string",
+                "description": "MongoDB connection URI (overrides credentials)"
+              },
+              "credentials": {
+                "description": "Optional credentials object for project auth flows"
+              },
+              "database": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Database name"
+              },
+              "collection": {
+                "type": "string",
+                "description": "Collection name (optional). Leave empty to search across ALL collections in the database."
+              },
+              "query": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": {}
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "description": "Query filter — must be a valid JSON object. Three modes:\n1. {} — return all documents in the collection.\n2. {\"field\": \"value\"} — standard MongoDB filter.\n3. {\"$search\": \"keyword\"} — search keyword across ALL string fields in every document.\nExample: {\"status\": \"pending\"}"
+              },
+              "limit": {
+                "type": "number",
+                "description": "Maximum number of documents to return (default 1000, max 5000)"
+              },
+              "sort": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": {}
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "description": "Sort order (JSON). Example: {\"createdAt\": -1}"
+              },
+              "skip": {
+                "type": "number",
+                "description": "Number of documents to skip for pagination"
+              },
+              "projection": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": {}
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "description": "Fields to include/exclude (JSON). Example: {\"name\": 1, \"email\": 1}"
+              }
+            },
+            "required": [
+              "database",
+              "query"
+            ],
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          },
+          "executionMode": "batch"
+        },
+        "isFormWait": false,
+        "executionId": "6ab0d301dc837fd45f427165",
+        "isTimerWait": false,
+        "isWebhookWait": false,
+        "connectedHandles": []
+      },
+      "type": "action",
+      "width": 220,
+      "height": 93,
+      "dragging": false,
+      "position": {
+        "x": 728.3790350312025,
+        "y": 66.51773294844054
+      },
+      "selected": true,
+      "positionAbsolute": {
+        "x": 728.3790350312025,
+        "y": 66.51773294844054
+      }
+    },
+    {
+      "id": "code.execute-1786013072080",
+      "data": {
+        "label": "Code",
+        "inputs": {
+          "code": "// =====================================================\n// ManuMind AI - Machine History Aggregator\n// Purpose:\n// Convert hundreds of historical MongoDB records\n// into one compact summary per machine for Gemini.\n// =====================================================\n\nconst items = $input.all();\n\n// Get MongoDB documents\nconst documents = items[0]?.json?.documents || [];\n\n// Store aggregated machine information\nconst machines = {};\n\n// -----------------------------------------------------\n// Process historical records\n// -----------------------------------------------------\n\nfor (const doc of documents) {\n\n    const machineId = doc.machine_id;\n\n    if (!machineId) continue;\n\n    // Create machine entry\n    if (!machines[machineId]) {\n\n        machines[machineId] = {\n            machine_id: machineId,\n\n            totalRecords: 0,\n            runningRecords: 0,\n            idleRecords: 0,\n            maintenanceRecords: 0,\n\n            totalUnits: 0,\n            totalCycleTime: 0,\n            cycleTimeRecords: 0,\n\n            totalDowntime: 0,\n            totalOEE: 0,\n\n            minMaintenanceDays: Infinity\n        };\n    }\n\n    const machine = machines[machineId];\n\n    machine.totalRecords++;\n\n    // -------------------------\n    // Machine Status\n    // -------------------------\n\n    const status = String(doc.status || \"\").toLowerCase();\n\n    if (status === \"running\") {\n        machine.runningRecords++;\n    }\n\n    if (status === \"idle\") {\n        machine.idleRecords++;\n    }\n\n    if (status === \"maintenance\") {\n        machine.maintenanceRecords++;\n    }\n\n    // -------------------------\n    // Production\n    // -------------------------\n\n    machine.totalUnits += Number(doc.units_produced || 0);\n\n    // -------------------------\n    // Cycle Time\n    // Only consider valid running cycle times\n    // -------------------------\n\n    const cycleTime = Number(doc.cycle_time_sec || 0);\n\n    if (cycleTime > 0) {\n        machine.totalCycleTime += cycleTime;\n        machine.cycleTimeRecords++;\n    }\n\n    // -------------------------\n    // Downtime\n    // -------------------------\n\n    machine.totalDowntime += Number(doc.downtime_min || 0);\n\n    // -------------------------\n    // OEE\n    // -------------------------\n\n    machine.totalOEE += Number(doc.oee_percent || 0);\n\n    // -------------------------\n    // Maintenance\n    // Keep closest maintenance requirement\n    // -------------------------\n\n    const maintenanceDays =\n        Number(doc.maintenance_due_days);\n\n    if (\n        Number.isFinite(maintenanceDays) &&\n        maintenanceDays >= 0\n    ) {\n        machine.minMaintenanceDays =\n            Math.min(\n                machine.minMaintenanceDays,\n                maintenanceDays\n            );\n    }\n}\n\n// -----------------------------------------------------\n// Helper function\n// -----------------------------------------------------\n\nconst round = (value) =>\n    Math.round(value * 10) / 10;\n\n// -----------------------------------------------------\n// Generate compact machine summaries\n// -----------------------------------------------------\n\nconst machineSummary = Object.values(machines).map(machine => {\n\n    const records = machine.totalRecords || 1;\n\n    const averageCycleTime =\n        machine.cycleTimeRecords > 0\n            ? machine.totalCycleTime / machine.cycleTimeRecords\n            : 0;\n\n    const runningPercentage =\n        (machine.runningRecords / records) * 100;\n\n    const maintenancePercentage =\n        (machine.maintenanceRecords / records) * 100;\n\n    return {\n\n        machine_id: machine.machine_id,\n\n        avg_units_per_record:\n            round(machine.totalUnits / records),\n\n        avg_cycle_time_sec:\n            round(averageCycleTime),\n\n        avg_downtime_min:\n            round(machine.totalDowntime / records),\n\n        avg_oee_percent:\n            round(machine.totalOEE / records),\n\n        running_percentage:\n            round(runningPercentage),\n\n        maintenance_percentage:\n            round(maintenancePercentage),\n\n        maintenance_due_days:\n            machine.minMaintenanceDays === Infinity\n                ? null\n                : machine.minMaintenanceDays\n    };\n});\n\n// -----------------------------------------------------\n// Return ONE item to Gemini\n// -----------------------------------------------------\n\nreturn [\n    {\n        json: {\n            machineSummary: machineSummary\n        }\n    }\n];",
+          "mode": "all",
+          "model": "gemini-3.1-flash-lite-preview",
+          "language": "javascript",
+          "provider": "gemini",
+          "question": "You are ManuMind AI's Production Scheduling Agent.\r\n\r\nYou are an AI manufacturing planner responsible for creating an optimized production schedule.\r\n\r\nYou will receive two inputs.\nThis is the input requirements \r\n {{$node[\"code.execute-1786000828167\"].json}}\nThis is the database readings\n\r\n-----------------------------------------------------\r\n\r\nINPUT 1\r\n\r\nProduction Request\r\n\r\n{\r\n  \"productionTarget\": 2000,\r\n  \"productType\": \"Product B\",\r\n  \"deliveryDeadline\": \"2026-08-07T15:02\",\r\n  \"availableMachines\": [\r\n      \"M103\",\r\n      \"M104\",\r\n      \"M105\",\r\n      \"M106\"\r\n  ],\r\n  \"activeShifts\": [\r\n      \"morning\",\r\n      \"afternoon\"\r\n  ]\r\n}\r\n\r\n-----------------------------------------------------\r\n\r\nINPUT 2\r\n\r\nHistorical Manufacturing Records from MongoDB.\r\n\r\nEach record may contain\r\n\r\nmachine_id\r\n\r\ntimestamp\r\n\r\nstatus\r\n\r\nunits_produced\r\n\r\ncycle_time_sec\r\n\r\ndowntime_min\r\n\r\ndefects\r\n\r\navailability_percent\r\n\r\nperformance_percent\r\n\r\nquality_percent\r\n\r\noee_percent\r\n\r\nproduction_line\r\n\r\nshift\r\n\r\nmaintenance_due_days\r\n\r\n-----------------------------------------------------\r\n\r\nYOUR TASK\r\n\r\nOnly consider the machines listed in availableMachines.\r\n\r\nAnalyze their historical performance.\r\n\r\nFor every available machine calculate\r\n\r\n• Average Production\r\n\r\n• Average OEE\r\n\r\n• Average Downtime\r\n\r\n• Average Cycle Time\r\n\r\n• Reliability\r\n\r\n• Machine Utilization\r\n\r\n• Production Capacity\r\n\r\n-----------------------------------------------------\r\n\r\nBased on this analysis,\r\n\r\ncreate the most efficient production schedule.\r\n\r\nOptimize for\r\n\r\n1. Highest OEE\r\n\r\n2. Lowest Downtime\r\n\r\n3. Highest Production\r\n\r\n4. Shortest Cycle Time\r\n\r\n5. Delivery before deadline\r\n\r\n6. Balanced workload among machines\r\n\r\n7. Use only the requested shifts.\r\n\r\n-----------------------------------------------------\r\n\r\nAllocate production among machines.\r\n\r\nFor every machine decide\r\n\r\nMachine ID\r\n\r\nAllocated Units\r\n\r\nEstimated Start Time\r\n\r\nEstimated End Time\r\n\r\nAssigned Shift\r\n\r\nEstimated Duration\r\n\r\nReason for selecting that machine\r\n\r\n-----------------------------------------------------\r\n\r\nEstimate\r\n\r\nTotal Production Time\r\n\r\nEstimated Completion Time\r\n\r\nWill Delivery Deadline be met?\r\n\r\nIf not,\r\n\r\nexplain why.\r\n\r\n-----------------------------------------------------\r\n\r\nGenerate Production Insights\r\n\r\nExamples\r\n\r\n• Machine M105 has highest efficiency.\r\n\r\n• Avoid M104 due to frequent downtime.\r\n\r\n• M103 is best for continuous production.\r\n\r\n• Production target can be achieved before deadline.\r\n\r\n-----------------------------------------------------\r\n\r\nReturn ONLY valid JSON.\r\n\r\nNo explanation.\r\n\r\nNo markdown.\r\n\r\nNo code.\r\n\r\n-----------------------------------------------------\r\n\r\nReturn in this exact format.\r\n\r\n{\r\n  \"summary\": {\r\n    \"productionTarget\": 2000,\r\n    \"estimatedCompletion\": \"\",\r\n    \"deadline\": \"\",\r\n    \"deadlineStatus\": \"On Track\",\r\n    \"totalMachinesUsed\": 0,\r\n    \"estimatedDurationHours\": 0\r\n  },\r\n\r\n  \"machineAnalysis\": [\r\n    {\r\n      \"machine\": \"\",\r\n      \"averageProduction\": 0,\r\n      \"averageOEE\": 0,\r\n      \"averageDowntime\": 0,\r\n      \"utilization\": 0,\r\n      \"capacityPerHour\": 0,\r\n      \"reliability\": \"High\"\r\n    }\r\n  ],\r\n\r\n  \"schedule\": [\r\n    {\r\n      \"machine\": \"\",\r\n      \"shift\": \"\",\r\n      \"startTime\": \"\",\r\n      \"endTime\": \"\",\r\n      \"allocatedUnits\": 0,\r\n      \"estimatedHours\": 0,\r\n      \"reason\": \"\"\r\n    }\r\n  ],\r\n\r\n  \"insights\": [\r\n    \"\",\r\n    \"\",\r\n    \"\"\r\n  ]\r\n}\r\n\r\n-----------------------------------------------------\r\n\r\nScheduling Rules\r\n\r\n• Never allocate work to machines not listed in availableMachines.\r\n\r\n• Allocate more units to machines with higher OEE and lower downtime.\r\n\r\n• Balance workload instead of assigning everything to one machine.\r\n\r\n• Keep start and end times realistic.\r\n\r\n• Ensure allocated units sum exactly to productionTarget.\r\n\r\n• Return only valid JSON.",
+          "credentialId": "69562ffd-c93e-49f1-85a5-e1f183a8b358",
+          "promptSource": "define",
+          "systemPrompt": "",
+          "enableFallback": false,
+          "requireSpecificOutputFormat": false
+        },
+        "toolId": "code.execute",
+        "toolData": {
+          "id": "code.execute",
+          "displayName": "Code",
+          "category": "Data  Processing",
+          "provider": "code",
+          "operation": "execute",
+          "icon": "💻",
+          "description": "Execute custom JavaScript or Python code",
+          "inputSchemaJSON": {
+            "type": "object",
+            "properties": {
+              "language": {
+                "type": "string",
+                "enum": [
+                  "javascript",
+                  "python"
+                ],
+                "description": "Programming language to execute"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "all",
+                  "each"
+                ],
+                "default": "all",
+                "description": "Execution mode"
+              },
+              "code": {
+                "type": "string",
+                "description": "Code to execute"
+              },
+              "input": {
+                "description": "Input data available as \"input\" variable"
+              },
+              "context": {
+                "description": "Execution context including other node results"
+              }
+            },
+            "required": [
+              "language",
+              "code"
+            ],
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          }
+        },
+        "isTrigger": false,
+        "isFormWait": false,
+        "executionId": "6ab0d301dc837fd45f427165",
+        "isTimerWait": false,
+        "isWebhookWait": false,
+        "connectedHandles": [],
+        "isPrimaryTrigger": false
+      },
+      "type": "action",
+      "width": 220,
+      "height": 93,
+      "dragging": false,
+      "position": {
+        "x": 1029.185878475904,
+        "y": 61.62186837991425
+      },
+      "selected": false,
+      "positionAbsolute": {
+        "x": 1029.185878475904,
+        "y": 61.62186837991425
+      }
+    },
+    {
+      "id": "code.execute-1786014267862",
+      "data": {
+        "label": "Code",
+        "inputs": {
+          "code": "// ==========================================\n// ManuMind AI - Format Scheduling Response\n// Purpose:\n// Parse Gemini response and return only the\n// data required by the frontend.\n// ==========================================\n\n// Get incoming items\nconst items = $input.all();\n\n// Parse Gemini response\nconst ai = JSON.parse(items[0].json.response);\n\n// Get schedule start time\nconst scheduleStartTime =\n    ai.schedule.length > 0\n        ? ai.schedule[0].startTime\n        : null;\n\n// Build frontend response\nreturn [\n{\n    json: {\n\n        summary: {\n            productionTarget: ai.summary.productionTarget,\n            maximumPossibleProduction: ai.summary.maximumPossibleProduction,\n            remainingUnits: ai.summary.remainingUnits,\n            capacityStatus: ai.summary.capacityStatus,\n\n            scheduleStartTime: scheduleStartTime,\n            estimatedCompletion: ai.summary.estimatedCompletion,\n            deadline: ai.summary.deadline,\n            deadlineStatus: ai.summary.deadlineStatus,\n\n            totalMachinesUsed: ai.summary.totalMachinesUsed,\n            estimatedDurationHours: ai.summary.estimatedDurationHours\n        },\n\n        schedule: ai.schedule.map(task => ({\n            machine: task.machine,\n            shift: task.shift,\n            unitsPerHour: task.unitsPerHour,\n            allocatedUnits: task.allocatedUnits,\n            startTime: task.startTime,\n            endTime: task.endTime,\n            estimatedHours: task.estimatedHours\n        })),\n\n        insights: ai.insights\n\n    }\n}\n];",
+          "mode": "all",
+          "language": "javascript"
+        },
+        "toolId": "code.execute",
+        "toolData": {
+          "id": "code.execute",
+          "displayName": "Code",
+          "category": "Data  Processing",
+          "provider": "code",
+          "operation": "execute",
+          "icon": "💻",
+          "description": "Execute custom JavaScript or Python code",
+          "inputSchemaJSON": {
+            "type": "object",
+            "properties": {
+              "language": {
+                "type": "string",
+                "enum": [
+                  "javascript",
+                  "python"
+                ],
+                "description": "Programming language to execute"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "all",
+                  "each"
+                ],
+                "default": "all",
+                "description": "Execution mode"
+              },
+              "code": {
+                "type": "string",
+                "description": "Code to execute"
+              },
+              "input": {
+                "description": "Input data available as \"input\" variable"
+              },
+              "context": {
+                "description": "Execution context including other node results"
+              }
+            },
+            "required": [
+              "language",
+              "code"
+            ],
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          }
+        },
+        "isTrigger": false,
+        "isFormWait": false,
+        "executionId": "6ab0d301dc837fd45f427165",
+        "isTimerWait": false,
+        "isWebhookWait": false,
+        "connectedHandles": [],
+        "isPrimaryTrigger": false
+      },
+      "type": "action",
+      "width": 220,
+      "height": 93,
+      "dragging": false,
+      "position": {
+        "x": 1730.3265262184213,
+        "y": 169.05832193800097
+      },
+      "selected": false,
+      "positionAbsolute": {
+        "x": 1730.3265262184213,
+        "y": 169.05832193800097
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "reactflow__edge-webhook-1785988921039-code.execute-1786000828167",
+      "data": {},
+      "type": "custom",
+      "source": "webhook-1785988921039",
+      "target": "code.execute-1786000828167"
+    },
+    {
+      "id": "reactflow__edge-code.execute-1786000828167-llm-agent-execute-1786011445278",
+      "data": {},
+      "type": "custom",
+      "source": "code.execute-1786000828167",
+      "target": "llm-agent-execute-1786011445278"
+    },
+    {
+      "id": "reactflow__edge-mongodb.find_document-1786012206785-code.execute-1786013072080",
+      "data": {},
+      "type": "custom",
+      "source": "mongodb.find_document-1786012206785",
+      "target": "code.execute-1786013072080"
+    },
+    {
+      "id": "reactflow__edge-code.execute-1786013072080-llm-agent-execute-1786011445278",
+      "data": {},
+      "type": "custom",
+      "source": "code.execute-1786013072080",
+      "target": "llm-agent-execute-1786011445278"
+    },
+    {
+      "id": "reactflow__edge-llm-agent-execute-1786011445278-code.execute-1786014267862",
+      "data": {},
+      "type": "custom",
+      "source": "llm-agent-execute-1786011445278",
+      "target": "code.execute-1786014267862"
+    },
+    {
+      "id": "reactflow__edge-webhook-1785988921039-mongodb.find_document-1786012206785",
+      "data": {},
+      "type": "custom",
+      "source": "webhook-1785988921039",
+      "target": "mongodb.find_document-1786012206785"
+    }
+  ]
+}

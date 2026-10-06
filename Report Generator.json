@@ -1,0 +1,1872 @@
+{
+  "_platform": "agentbuilder",
+  "_version": 1,
+  "_exportedAt": "2026-10-06T04:45:31.627Z",
+  "_fingerprint": "YWN0aW9uOmNvZGUuZXhlY3V0ZXxhY3Rpb246Y29kZS5leGVjdXRlfGFjdGlvbjpj",
+  "nodes": [
+    {
+      "id": "webhook-1786419926564",
+      "data": {
+        "label": "Webhook Trigger",
+        "inputs": {
+          "path": "Report",
+          "method": "POST",
+          "options": {},
+          "allowedRoles": "admin, staff",
+          "jwtAlgorithm": "HS256",
+          "responseMode": "lastNode",
+          "roleClaimKey": "role",
+          "sessionClaim": "sub",
+          "sessionSource": "none",
+          "authentication": "none",
+          "requireRoleCheck": false
+        },
+        "toolId": "webhook",
+        "toolData": {
+          "id": "webhook",
+          "displayName": "Webhook Trigger",
+          "category": "Input /  Output",
+          "icon": "webhook",
+          "description": "Trigger workflow via webhook",
+          "inputSchemaJSON": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "The path to listen on (e.g. \"my-hook\")"
+              },
+              "method": {
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "POST",
+                  "PUT",
+                  "DELETE",
+                  "PATCH",
+                  "HEAD"
+                ],
+                "default": "POST",
+                "description": "HTTP Method"
+              },
+              "responseMode": {
+                "type": "string",
+                "enum": [
+                  "onReceived",
+                  "lastNode",
+                  "respondWithNode",
+                  "streaming"
+                ],
+                "default": "lastNode",
+                "description": "When to respond"
+              },
+              "authentication": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "basicAuth",
+                  "headerAuth",
+                  "jwtAuth"
+                ],
+                "default": "none",
+                "description": "Authentication"
+              },
+              "basicAuthUser": {
+                "type": "string",
+                "description": "Username"
+              },
+              "basicAuthPassword": {
+                "type": "string",
+                "description": "Password"
+              },
+              "headerAuthName": {
+                "type": "string",
+                "description": "Name"
+              },
+              "headerAuthValue": {
+                "type": "string",
+                "description": "Value"
+              },
+              "jwtSecret": {
+                "type": "string",
+                "description": "Secret"
+              },
+              "jwtAlgorithm": {
+                "type": "string",
+                "enum": [
+                  "HS256",
+                  "HS384",
+                  "HS512"
+                ],
+                "default": "HS256",
+                "description": "Algorithm"
+              },
+              "sessionClaim": {
+                "type": "string",
+                "default": "sub",
+                "description": "JWT claim used to identify the session"
+              },
+              "requireRoleCheck": {
+                "type": "boolean",
+                "default": false,
+                "description": "Require Role Check (RBAC)"
+              },
+              "roleClaimKey": {
+                "type": "string",
+                "default": "role",
+                "description": "Role Claim Key"
+              },
+              "allowedRoles": {
+                "type": "string",
+                "default": "admin, staff",
+                "description": "Allowed Roles (comma separated)"
+              },
+              "sessionSource": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "auto",
+                  "header",
+                  "cookie",
+                  "body"
+                ],
+                "default": "none",
+                "description": "Session Source"
+              },
+              "sessionSourceName": {
+                "type": "string",
+                "description": "Session Source Name (header / cookie / body field)"
+              },
+              "options": {
+                "type": "object",
+                "properties": {
+                  "allowedOrigins": {
+                    "type": "string",
+                    "description": "Allowed Origins (CORS)"
+                  },
+                  "binaryDataFieldName": {
+                    "type": "string",
+                    "description": "Field Name for Binary Data"
+                  },
+                  "ignoreBots": {
+                    "type": "boolean",
+                    "description": "Ignore Bots"
+                  },
+                  "ipAllowlist": {
+                    "type": "string",
+                    "description": "IP(s) Allowlist"
+                  },
+                  "noResponseBody": {
+                    "type": "boolean",
+                    "description": "No Response Body"
+                  },
+                  "rawBody": {
+                    "type": "boolean",
+                    "description": "Raw Body"
+                  },
+                  "responseCode": {
+                    "type": "number",
+                    "description": "Response Code"
+                  },
+                  "responseData": {
+                    "type": "string",
+                    "description": "Response Data"
+                  }
+                },
+                "additionalProperties": false,
+                "default": {},
+                "description": "Options"
+              }
+            },
+            "required": [
+              "path"
+            ],
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          },
+          "fields": [
+            {
+              "name": "path",
+              "displayName": "Path",
+              "type": "string",
+              "default": "",
+              "required": true,
+              "description": "The path to listen on (e.g. \"my-hook\")"
+            },
+            {
+              "name": "method",
+              "displayName": "HTTP Method",
+              "type": "options",
+              "default": "POST",
+              "required": true,
+              "options": [
+                {
+                  "name": "GET",
+                  "value": "GET"
+                },
+                {
+                  "name": "POST",
+                  "value": "POST"
+                },
+                {
+                  "name": "PUT",
+                  "value": "PUT"
+                },
+                {
+                  "name": "DELETE",
+                  "value": "DELETE"
+                },
+                {
+                  "name": "PATCH",
+                  "value": "PATCH"
+                },
+                {
+                  "name": "HEAD",
+                  "value": "HEAD"
+                }
+              ],
+              "description": "HTTP Method to listen for"
+            },
+            {
+              "name": "responseMode",
+              "displayName": "Respond",
+              "type": "options",
+              "default": "lastNode",
+              "required": true,
+              "options": [
+                {
+                  "name": "Immediately",
+                  "value": "onReceived"
+                },
+                {
+                  "name": "When Last Node Finishes",
+                  "value": "lastNode"
+                },
+                {
+                  "name": "Using 'Respond to Webhook' Node",
+                  "value": "respondWithNode"
+                },
+                {
+                  "name": "Streaming",
+                  "value": "streaming"
+                }
+              ],
+              "description": "When to respond to the webhook request"
+            },
+            {
+              "name": "authentication",
+              "displayName": "Authentication",
+              "type": "options",
+              "default": "none",
+              "options": [
+                {
+                  "name": "Basic Auth",
+                  "value": "basicAuth"
+                },
+                {
+                  "name": "Header Auth",
+                  "value": "headerAuth"
+                },
+                {
+                  "name": "JWT Auth",
+                  "value": "jwtAuth"
+                },
+                {
+                  "name": "None",
+                  "value": "none"
+                }
+              ],
+              "description": "The type of authentication to use for incoming webhook requests"
+            },
+            {
+              "name": "sessionSource",
+              "displayName": "Session Source",
+              "type": "options",
+              "default": "none",
+              "options": [
+                {
+                  "name": "None (legacy, no session)",
+                  "value": "none"
+                },
+                {
+                  "name": "Auto (platform issues a session id)",
+                  "value": "auto"
+                },
+                {
+                  "name": "From Header",
+                  "value": "header"
+                },
+                {
+                  "name": "From Cookie",
+                  "value": "cookie"
+                },
+                {
+                  "name": "From Body Field",
+                  "value": "body"
+                }
+              ],
+              "description": "How the platform identifies the caller for per-user session continuity. Required when memory or loops should partition by caller."
+            },
+            {
+              "name": "sessionSourceName",
+              "displayName": "Session Source Name",
+              "type": "string",
+              "default": "",
+              "placeholder": "e.g. X-Caller-Id (header), userId (body field), session_id (cookie)",
+              "description": "Header name, body field path, or cookie name used as the caller id.",
+              "displayOptions": {
+                "show": {
+                  "sessionSource": [
+                    "header",
+                    "cookie",
+                    "body"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "basicAuthUser",
+              "displayName": "User",
+              "type": "string",
+              "default": "",
+              "required": true,
+              "description": "The username for Basic Authentication",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "basicAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "basicAuthPassword",
+              "displayName": "Password",
+              "type": "string",
+              "default": "",
+              "required": true,
+              "typeOptions": {
+                "password": true
+              },
+              "description": "The password for Basic Authentication",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "basicAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "headerAuthName",
+              "displayName": "Name",
+              "type": "string",
+              "default": "",
+              "required": true,
+              "description": "The header name to check for authentication",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "headerAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "headerAuthValue",
+              "displayName": "Value",
+              "type": "string",
+              "default": "",
+              "required": true,
+              "typeOptions": {
+                "password": true
+              },
+              "description": "The expected header value for authentication",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "headerAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "jwtSecret",
+              "displayName": "Secret",
+              "type": "string",
+              "default": "",
+              "required": true,
+              "typeOptions": {
+                "password": true
+              },
+              "description": "The secret key used to verify the JWT token",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "jwtAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "jwtAlgorithm",
+              "displayName": "Algorithm",
+              "type": "options",
+              "default": "HS256",
+              "options": [
+                {
+                  "name": "HS256",
+                  "value": "HS256"
+                },
+                {
+                  "name": "HS384",
+                  "value": "HS384"
+                },
+                {
+                  "name": "HS512",
+                  "value": "HS512"
+                }
+              ],
+              "description": "The algorithm used to sign the JWT token",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "jwtAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "sessionClaim",
+              "displayName": "Session Claim",
+              "type": "string",
+              "default": "sub",
+              "description": "The claim in the JWT payload that identifies the user (e.g. sub, email, userId). Leave blank to skip session tracking.",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "jwtAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "requireRoleCheck",
+              "displayName": "Require Role Check (RBAC)",
+              "type": "boolean",
+              "default": false,
+              "description": "If enabled, the incoming JWT must contain an authorized role claim to execute the workflow.",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "jwtAuth"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "roleClaimKey",
+              "displayName": "Role Claim Key",
+              "type": "string",
+              "default": "role",
+              "description": "The field name inside the JWT payload that contains the user's role (e.g., \"role\", \"groups\").",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "jwtAuth"
+                  ],
+                  "requireRoleCheck": [
+                    true
+                  ]
+                }
+              }
+            },
+            {
+              "name": "allowedRoles",
+              "displayName": "Allowed Roles",
+              "type": "string",
+              "default": "admin, staff",
+              "description": "A comma-separated list of roles that are allowed to trigger this workflow. If empty, all roles pass.",
+              "displayOptions": {
+                "show": {
+                  "authentication": [
+                    "jwtAuth"
+                  ],
+                  "requireRoleCheck": [
+                    true
+                  ]
+                }
+              }
+            },
+            {
+              "name": "options",
+              "displayName": "Options",
+              "type": "collection",
+              "default": {},
+              "placeholder": "Add option",
+              "fields": [
+                {
+                  "name": "allowedOrigins",
+                  "displayName": "Allowed Origins (CORS)",
+                  "type": "string",
+                  "default": "*",
+                  "placeholder": "*",
+                  "description": "Comma-separated list of allowed origins for CORS. Use * to allow all origins."
+                },
+                {
+                  "name": "binaryDataFieldName",
+                  "displayName": "Field Name for Binary Data",
+                  "type": "string",
+                  "default": "data",
+                  "placeholder": "data",
+                  "description": "The name of the field in the request that contains binary data (for file uploads)."
+                },
+                {
+                  "name": "ignoreBots",
+                  "displayName": "Ignore Bots",
+                  "type": "boolean",
+                  "default": false,
+                  "description": "If enabled, requests from known bots (crawlers, spiders) will be ignored."
+                },
+                {
+                  "name": "ipAllowlist",
+                  "displayName": "IP(s) Allowlist",
+                  "type": "string",
+                  "default": "",
+                  "placeholder": "e.g. 127.0.0.1, 192.168.1.0/24",
+                  "description": "Comma-separated list of IPs or CIDR ranges. Only these IPs can trigger the webhook."
+                },
+                {
+                  "name": "noResponseBody",
+                  "displayName": "No Response Body",
+                  "type": "boolean",
+                  "default": false,
+                  "description": "If enabled, the webhook will respond with an empty body (only status code)."
+                },
+                {
+                  "name": "rawBody",
+                  "displayName": "Raw Body",
+                  "type": "boolean",
+                  "default": false,
+                  "description": "If enabled, the raw request body will be passed as-is without parsing."
+                },
+                {
+                  "name": "responseData",
+                  "displayName": "Response Data",
+                  "type": "string",
+                  "default": "",
+                  "placeholder": "Response body content",
+                  "description": "Custom response data to return when the webhook is triggered (JSON or text)."
+                }
+              ]
+            }
+          ]
+        },
+        "isTrigger": true,
+        "isFormWait": false,
+        "executionId": "6ab0d34adc837fd45f427167",
+        "isTimerWait": false,
+        "isWebhookWait": false,
+        "connectedHandles": [],
+        "isPrimaryTrigger": true
+      },
+      "type": "webhook",
+      "width": 220,
+      "height": 99,
+      "dragging": false,
+      "position": {
+        "x": -20.895514898914172,
+        "y": 220.37658638340287
+      },
+      "selected": false,
+      "positionAbsolute": {
+        "x": -20.895514898914172,
+        "y": 220.37658638340287
+      }
+    },
+    {
+      "id": "code.execute-1786420205345",
+      "data": {
+        "label": "Code",
+        "inputs": {
+          "code": "// ==========================================\n// ManuMind AI - Report Generator Preprocessor\n// Purpose:\n// Accept dashboard OR scheduling data and\n// prepare a clean payload for the LLM.\n// ==========================================\n\nconst items = $input.all();\n\nreturn items.map(item => {\n\n    const body = item.json.body || {};\n\n    const source = body.source;\n    const timestamp = body.timestamp;\n    const details = body.details || {};\n\n    // Validate source\n    if (source !== \"dashboard\" && source !== \"scheduling\") {\n        return {\n            json: {\n                error: \"Invalid report source. Expected dashboard or scheduling.\"\n            }\n        };\n    }\n\n    // ------------------------------------------\n    // Dashboard Report\n    // ------------------------------------------\n\n    if (source === \"dashboard\") {\n\n        const summary = details.summary || {};\n\n        return {\n            json: {\n                reportType: \"dashboard\",\n                generatedAt: timestamp,\n\n                data: {\n                    summary: {\n                        totalProduction: summary.totalProduction,\n                        totalDefects: summary.totalDefects,\n                        averageUtilization: summary.averageUtilization,\n                        bestMachine: summary.bestMachine,\n                        bestShift: summary.bestShift\n                    },\n\n                    productionTrend: details.productionTrend || [],\n\n                    machineUtilization: details.machineUtilization || [],\n\n                    defectAnalysis: details.defectAnalysis || [],\n\n                    shiftPerformance: details.shiftPerformance || []\n                }\n            }\n        };\n    }\n\n    // ------------------------------------------\n    // Scheduling Report\n    // ------------------------------------------\n\n    if (source === \"scheduling\") {\n\n        const summary = details.summary || {};\n\n        return {\n            json: {\n                reportType: \"scheduling\",\n                generatedAt: timestamp,\n\n                data: {\n                    summary: {\n                        productionTarget: summary.productionTarget,\n                        maximumPossibleProduction:\n                            summary.maximumPossibleProduction,\n                        remainingUnits: summary.remainingUnits,\n                        capacityStatus: summary.capacityStatus,\n                        scheduleStartTime: summary.scheduleStartTime,\n                        estimatedCompletion:\n                            summary.estimatedCompletion,\n                        deadline: summary.deadline,\n                        deadlineStatus:\n                            summary.deadlineStatus,\n                        totalMachinesUsed:\n                            summary.totalMachinesUsed,\n                        estimatedDurationHours:\n                            summary.estimatedDurationHours\n                    },\n\n                    schedule: (details.schedule || []).map(task => ({\n                        machine: task.machine,\n                        shift: task.shift,\n                        unitsPerHour: task.unitsPerHour,\n                        allocatedUnits: task.allocatedUnits,\n                        startTime: task.startTime,\n                        endTime: task.endTime,\n                        estimatedHours: task.estimatedHours\n                    })),\n\n                    insights: details.insights || []\n                }\n            }\n        };\n    }\n\n});",
+          "mode": "all",
+          "language": "javascript"
+        },
+        "toolId": "code.execute",
+        "toolData": {
+          "id": "code.execute",
+          "displayName": "Code",
+          "category": "Data  Processing",
+          "provider": "code",
+          "operation": "execute",
+          "icon": "💻",
+          "description": "Execute custom JavaScript or Python code",
+          "inputSchemaJSON": {
+            "type": "object",
+            "properties": {
+              "language": {
+                "type": "string",
+                "enum": [
+                  "javascript",
+                  "python"
+                ],
+                "description": "Programming language to execute"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "all",
+                  "each"
+                ],
+                "default": "all",
+                "description": "Execution mode"
+              },
+              "code": {
+                "type": "string",
+                "description": "Code to execute"
+              },
+              "input": {
+                "description": "Input data available as \"input\" variable"
+              },
+              "context": {
+                "description": "Execution context including other node results"
+              }
+            },
+            "required": [
+              "language",
+              "code"
+            ],
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          }
+        },
+        "isTrigger": false,
+        "isFormWait": false,
+        "executionId": "6ab0d34adc837fd45f427167",
+        "isTimerWait": false,
+        "isWebhookWait": false,
+        "connectedHandles": [],
+        "isPrimaryTrigger": false
+      },
+      "type": "action",
+      "width": 220,
+      "height": 93,
+      "dragging": false,
+      "position": {
+        "x": 247.891795301461,
+        "y": 222.14747682249356
+      },
+      "selected": false,
+      "positionAbsolute": {
+        "x": 247.891795301461,
+        "y": 222.14747682249356
+      }
+    },
+    {
+      "id": "google.gmail.send-1786420258093",
+      "data": {
+        "label": "Send a message",
+        "inputs": {
+          "cc": "divyeshk201@gmail.com , bhavatharaniam@gmail.com , anirudhvsbagya@gmail.com",
+          "to": "manoranjith.net@gmail.com",
+          "message": "<h2>ManuMind AI - Manufacturing Report</h2>\r\n\r\n<p>Hello,</p>\r\n\r\n<p>\r\nPlease find attached the latest\r\n<strong>{{report.reportType}}</strong>\r\nreport generated by ManuMind AI.\r\n</p>\r\n\r\n<p>\r\nThe report contains the analyzed manufacturing data,\r\nkey insights, and recommendations.\r\n</p>\r\n\r\n<p>\r\n<strong>Generated:</strong> {{report.generatedAt}}\r\n</p>\r\n\r\n<p>\r\nRegards,<br>\r\n<strong>ManuMind AI</strong><br>\r\nManufacturing Intelligence Platform\r\n</p>",
+          "subject": "ManuMind AI | Manufacturing {{report.reportType}} Report",
+          "emailType": "html",
+          "attachments": " {{$node[\"code.execute-1786424088604\"].json[\"attachment\"]}}",
+          "credentialId": "5b396c16-8251-4ff8-994f-209c315a9e1e",
+          "appendAttribution": true
+        },
+        "toolId": "google.gmail.send",
+        "toolData": {
+          "id": "google.gmail.send",
+          "displayName": "Send a message",
+          "category": "Integrations",
+          "provider": "gmail",
+          "operation": "send",
+          "icon": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg",
+          "description": "Send an email using Gmail API",
+          "inputSchemaJSON": {
+            "type": "object",
+            "properties": {
+              "credentials": {
+                "type": "object",
+                "properties": {
+                  "access_token": {
+                    "type": "string"
+                  },
+                  "refresh_token": {
+                    "type": "string"
+                  },
+                  "expiry_date": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "access_token"
+                ],
+                "additionalProperties": false
+              },
+              "to": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Recipient email address (e.g., info@example.com)."
+              },
+              "cc": {
+                "type": "string",
+                "description": "CC recipients (comma-separated)."
+              },
+              "bcc": {
+                "type": "string",
+                "description": "BCC recipients (comma-separated)."
+              },
+              "subject": {
+                "type": "string",
+                "description": "Email subject"
+              },
+              "emailType": {
+                "type": "string",
+                "enum": [
+                  "text",
+                  "html"
+                ],
+                "description": "Email body format - Text or HTML"
+              },
+              "message": {
+                "type": "string",
+                "description": "Email message content (plain text or HTML depending on emailType)"
+              },
+              "attachments": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "filename": {
+                      "type": "string"
+                    },
+                    "content": {
+                      "type": "string",
+                      "description": "Base64 encoded file content"
+                    },
+                    "mimeType": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "filename",
+                    "content"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "Email attachments"
+              },
+              "appendAttribution": {
+                "type": "boolean",
+                "default": true,
+                "description": "Whether to append \"Sent via SNS Agent Builder\" to the email"
+              }
+            },
+            "required": [
+              "credentials",
+              "to",
+              "emailType",
+              "message"
+            ],
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          },
+          "subCategory": "Message",
+          "featured": true
+        },
+        "isTrigger": false,
+        "isFormWait": false,
+        "executionId": "6ab0d34adc837fd45f427167",
+        "isTimerWait": false,
+        "isWebhookWait": false,
+        "connectedHandles": [],
+        "isPrimaryTrigger": false
+      },
+      "type": "action",
+      "width": 220,
+      "height": 93,
+      "dragging": false,
+      "position": {
+        "x": 1871.3184350572758,
+        "y": 234.90102253519115
+      },
+      "selected": false,
+      "positionAbsolute": {
+        "x": 1871.3184350572758,
+        "y": 234.90102253519115
+      }
+    },
+    {
+      "id": "pdfGenerator-1786420840131",
+      "data": {
+        "label": "PDF Generator",
+        "inputs": {
+          "content": " {{$node[\"code.execute-1786421566987\"].json[\"html\"]}}",
+          "fileName": " {{$node[\"code.execute-1786421566987\"].json[\"fileName\"]}}",
+          "jsonData": "  {{$node[\"code.execute-1786421566987\"].json[\"report\"]}}",
+          "cssStyles": "",
+          "sourceType": "html",
+          "contentType": "html",
+          "htmlContent": " {{$node[\"code.execute-1786421566987\"].json[\"html\"]}}",
+          "htmlTemplate": "<!DOCTYPE html>\r\n<html>\r\n<head>\r\n<meta charset=\"UTF-8\">\r\n<style>\r\nbody {\r\n    font-family: Arial, sans-serif;\r\n    margin: 40px;\r\n}\r\nh1 {\r\n    color: #2563eb;\r\n}\r\n</style>\r\n</head>\r\n\r\n<body>\r\n\r\n<h1>{{title}}</h1>\r\n\r\n<h2>{{reportType}}</h2>\r\n\r\n<p>Generated At: {{generatedAt}}</p>\r\n\r\n<p>{{description}}</p>\r\n\r\n<h2>Executive Summary</h2>\r\n\r\n<p>{{executiveSummary}}</p>\r\n\r\n</body>\r\n</html>",
+          "outputFormat": "PDF",
+          "outputFileName": " {{$node[\"code.execute-1786421566987\"].json[\"fileName\"]}}",
+          "enableHeaderFooter": false
+        },
+        "toolId": "pdfGenerator",
+        "toolData": {
+          "id": "pdfGenerator",
+          "displayName": "PDF Generator",
+          "category": "Data  Processing",
+          "provider": "core",
+          "icon": "/tools/pdf_generator.svg",
+          "description": "Creates a PDF document from structured content.",
+          "inputSchemaJSON": {
+            "type": "object",
+            "properties": {
+              "sourceType": {
+                "type": "string",
+                "enum": [
+                  "html",
+                  "text",
+                  "markdown",
+                  "jsonTemplate",
+                  "htmlFile",
+                  "image",
+                  "multipleImages",
+                  "url"
+                ]
+              },
+              "htmlContent": {
+                "type": "string"
+              },
+              "cssStyles": {
+                "type": "string"
+              },
+              "headerHtml": {
+                "type": "string"
+              },
+              "footerHtml": {
+                "type": "string"
+              },
+              "textContent": {
+                "type": "string"
+              },
+              "markdownContent": {
+                "type": "string"
+              },
+              "htmlTemplate": {
+                "type": "string"
+              },
+              "jsonData": {
+                "type": "string"
+              },
+              "imageFile": {
+                "type": "string"
+              },
+              "imageCollection": {
+                "type": "string"
+              },
+              "websiteUrl": {
+                "type": "string"
+              },
+              "paperSize": {
+                "type": "string"
+              },
+              "customWidth": {
+                "type": "string"
+              },
+              "customHeight": {
+                "type": "string"
+              },
+              "orientation": {
+                "type": "string"
+              },
+              "margins": {
+                "type": "string"
+              },
+              "printBackground": {
+                "type": "boolean"
+              },
+              "scale": {
+                "type": "number"
+              },
+              "fontFamily": {
+                "type": "string"
+              },
+              "fontSize": {
+                "type": "string"
+              },
+              "fontColor": {
+                "type": "string"
+              },
+              "enablePassword": {
+                "type": "boolean"
+              },
+              "password": {
+                "type": "string"
+              },
+              "permissions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "enableWatermark": {
+                "type": "boolean"
+              },
+              "watermarkText": {
+                "type": "string"
+              },
+              "watermarkOpacity": {
+                "type": "number"
+              },
+              "watermarkRotation": {
+                "type": "number"
+              },
+              "metaTitle": {
+                "type": "string"
+              },
+              "metaAuthor": {
+                "type": "string"
+              },
+              "metaSubject": {
+                "type": "string"
+              },
+              "metaKeywords": {
+                "type": "string"
+              },
+              "outputFormat": {
+                "type": "string",
+                "enum": [
+                  "PDF",
+                  "Binary",
+                  "Base64",
+                  "File"
+                ],
+                "default": "PDF"
+              },
+              "fileName": {
+                "type": "string"
+              },
+              "compression": {
+                "type": "string"
+              },
+              "imageQuality": {
+                "type": "string"
+              },
+              "pdfVersion": {
+                "type": "string"
+              },
+              "waitForImages": {
+                "type": "boolean"
+              },
+              "waitTime": {
+                "type": "number"
+              },
+              "includeBackgroundImages": {
+                "type": "boolean"
+              },
+              "executeJavascript": {
+                "type": "boolean"
+              },
+              "pageBreakRules": {
+                "type": "string"
+              },
+              "mergePdfs": {
+                "type": "boolean"
+              },
+              "mergeAll": {
+                "type": "boolean"
+              },
+              "pdfaCompliance": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "sourceType",
+              "paperSize"
+            ],
+            "additionalProperties": {},
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          },
+          "fields": [
+            {
+              "displayName": "Source Type",
+              "name": "sourceType",
+              "type": "options",
+              "required": true,
+              "description": "The type of content to generate PDF from",
+              "options": [
+                {
+                  "name": "HTML",
+                  "value": "html"
+                },
+                {
+                  "name": "Plain Text",
+                  "value": "text"
+                },
+                {
+                  "name": "Markdown",
+                  "value": "markdown"
+                },
+                {
+                  "name": "JSON Template",
+                  "value": "jsonTemplate"
+                },
+                {
+                  "name": "Existing HTML File",
+                  "value": "htmlFile"
+                },
+                {
+                  "name": "Image",
+                  "value": "image"
+                },
+                {
+                  "name": "Multiple Images",
+                  "value": "multipleImages"
+                },
+                {
+                  "name": "URL",
+                  "value": "url"
+                }
+              ],
+              "default": "html"
+            },
+            {
+              "displayName": "HTML Content",
+              "name": "htmlContent",
+              "type": "string",
+              "required": true,
+              "description": "Enter raw HTML code to convert to PDF",
+              "displayOptions": {
+                "show": {
+                  "sourceType": [
+                    "html"
+                  ]
+                }
+              }
+            },
+            {
+              "displayName": "CSS Styles",
+              "name": "cssStyles",
+              "type": "string",
+              "description": "Additional CSS rules for the HTML content",
+              "displayOptions": {
+                "show": {
+                  "sourceType": [
+                    "html"
+                  ]
+                }
+              }
+            },
+            {
+              "displayName": "Text Content",
+              "name": "textContent",
+              "type": "string",
+              "required": true,
+              "description": "Plain text content to convert to PDF",
+              "displayOptions": {
+                "show": {
+                  "sourceType": [
+                    "text"
+                  ]
+                }
+              }
+            },
+            {
+              "displayName": "Markdown Content",
+              "name": "markdownContent",
+              "type": "string",
+              "required": true,
+              "description": "Markdown formatted text to convert to PDF",
+              "displayOptions": {
+                "show": {
+                  "sourceType": [
+                    "markdown"
+                  ]
+                }
+              }
+            },
+            {
+              "displayName": "HTML Template",
+              "name": "htmlTemplate",
+              "type": "string",
+              "required": true,
+              "description": "HTML layout template with placeholders (e.g. {{name}})",
+              "displayOptions": {
+                "show": {
+                  "sourceType": [
+                    "jsonTemplate"
+                  ]
+                }
+              }
+            },
+            {
+              "displayName": "JSON Data",
+              "name": "jsonData",
+              "type": "string",
+              "required": true,
+              "description": "JSON data used to populate template variables",
+              "displayOptions": {
+                "show": {
+                  "sourceType": [
+                    "jsonTemplate"
+                  ]
+                }
+              }
+            },
+            {
+              "displayName": "HTML File",
+              "name": "htmlFile",
+              "type": "string",
+              "required": true,
+              "description": "HTML file reference or binary data",
+              "displayOptions": {
+                "show": {
+                  "sourceType": [
+                    "htmlFile"
+                  ]
+                }
+              }
+            },
+            {
+              "displayName": "Image File",
+              "name": "imageFile",
+              "type": "string",
+              "required": true,
+              "description": "Image file (PNG, JPEG, SVG, WEBP) base64 or URL",
+              "displayOptions": {
+                "show": {
+                  "sourceType": [
+                    "image"
+                  ]
+                }
+              }
+            },
+            {
+              "displayName": "Image Collection",
+              "name": "imageCollection",
+              "type": "string",
+              "required": true,
+              "description": "Array of image files/URLs to create a multi-page PDF",
+              "displayOptions": {
+                "show": {
+                  "sourceType": [
+                    "multipleImages"
+                  ]
+                }
+              }
+            },
+            {
+              "displayName": "Website URL",
+              "name": "websiteUrl",
+              "type": "string",
+              "required": true,
+              "description": "Public URL of the webpage to convert into PDF",
+              "displayOptions": {
+                "show": {
+                  "sourceType": [
+                    "url"
+                  ]
+                }
+              }
+            },
+            {
+              "displayName": "Paper Size",
+              "name": "paperSize",
+              "type": "options",
+              "required": true,
+              "default": "A4",
+              "options": [
+                {
+                  "name": "A4",
+                  "value": "A4"
+                },
+                {
+                  "name": "A3",
+                  "value": "A3"
+                },
+                {
+                  "name": "A5",
+                  "value": "A5"
+                },
+                {
+                  "name": "Letter",
+                  "value": "Letter"
+                },
+                {
+                  "name": "Legal",
+                  "value": "Legal"
+                },
+                {
+                  "name": "Tabloid",
+                  "value": "Tabloid"
+                },
+                {
+                  "name": "Custom",
+                  "value": "Custom"
+                }
+              ]
+            },
+            {
+              "displayName": "Custom Width",
+              "name": "customWidth",
+              "type": "string",
+              "description": "e.g., '8.5in', '210mm', '800px'",
+              "displayOptions": {
+                "show": {
+                  "paperSize": [
+                    "Custom"
+                  ]
+                }
+              }
+            },
+            {
+              "displayName": "Custom Height",
+              "name": "customHeight",
+              "type": "string",
+              "description": "e.g., '11in', '297mm', '600px'",
+              "displayOptions": {
+                "show": {
+                  "paperSize": [
+                    "Custom"
+                  ]
+                }
+              }
+            },
+            {
+              "displayName": "Orientation",
+              "name": "orientation",
+              "type": "options",
+              "default": "Portrait",
+              "options": [
+                {
+                  "name": "Portrait",
+                  "value": "Portrait"
+                },
+                {
+                  "name": "Landscape",
+                  "value": "Landscape"
+                }
+              ]
+            },
+            {
+              "displayName": "Margins",
+              "name": "margins",
+              "type": "string",
+              "default": "20 mm",
+              "description": "Page margins (e.g. '20 mm' or JSON '{ top, bottom, left, right }')"
+            },
+            {
+              "displayName": "Print Background",
+              "name": "printBackground",
+              "type": "boolean",
+              "default": true,
+              "description": "Include background colors and images in the PDF"
+            },
+            {
+              "displayName": "Scale",
+              "name": "scale",
+              "type": "number",
+              "default": 100,
+              "description": "Scale of the page rendering (1-200%)"
+            },
+            {
+              "displayName": "Enable Header & Footer",
+              "name": "enableHeaderFooter",
+              "type": "boolean",
+              "default": false
+            },
+            {
+              "displayName": "Header HTML",
+              "name": "headerHtml",
+              "type": "string",
+              "description": "HTML template for page headers",
+              "displayOptions": {
+                "show": {
+                  "enableHeaderFooter": [
+                    true
+                  ]
+                }
+              }
+            },
+            {
+              "displayName": "Footer HTML",
+              "name": "footerHtml",
+              "type": "string",
+              "description": "HTML template for page footers",
+              "displayOptions": {
+                "show": {
+                  "enableHeaderFooter": [
+                    true
+                  ]
+                }
+              }
+            },
+            {
+              "displayName": "Font Family",
+              "name": "fontFamily",
+              "type": "options",
+              "default": "Arial",
+              "options": [
+                {
+                  "name": "Arial",
+                  "value": "Arial"
+                },
+                {
+                  "name": "Helvetica",
+                  "value": "Helvetica"
+                },
+                {
+                  "name": "Times New Roman",
+                  "value": "Times New Roman"
+                },
+                {
+                  "name": "Roboto",
+                  "value": "Roboto"
+                },
+                {
+                  "name": "Open Sans",
+                  "value": "Open Sans"
+                }
+              ]
+            },
+            {
+              "displayName": "Password Protect",
+              "name": "enablePassword",
+              "type": "boolean",
+              "default": false
+            },
+            {
+              "displayName": "Password",
+              "name": "password",
+              "type": "string",
+              "displayOptions": {
+                "show": {
+                  "enablePassword": [
+                    true
+                  ]
+                }
+              }
+            },
+            {
+              "displayName": "Enable Watermark",
+              "name": "enableWatermark",
+              "type": "boolean",
+              "default": false
+            },
+            {
+              "displayName": "Watermark Text",
+              "name": "watermarkText",
+              "type": "string",
+              "displayOptions": {
+                "show": {
+                  "enableWatermark": [
+                    true
+                  ]
+                }
+              }
+            },
+            {
+              "displayName": "Output Format",
+              "name": "outputFormat",
+              "type": "options",
+              "required": true,
+              "default": "PDF",
+              "options": [
+                {
+                  "name": "PDF",
+                  "value": "PDF"
+                },
+                {
+                  "name": "Binary",
+                  "value": "Binary"
+                },
+                {
+                  "name": "Base64",
+                  "value": "Base64"
+                },
+                {
+                  "name": "File",
+                  "value": "File"
+                }
+              ]
+            },
+            {
+              "displayName": "File Name",
+              "name": "fileName",
+              "type": "string",
+              "description": "Supports Expressions e.g., {{$json.invoice_no}}.pdf"
+            },
+            {
+              "displayName": "Compression",
+              "name": "compression",
+              "type": "options",
+              "default": "Medium",
+              "options": [
+                {
+                  "name": "None",
+                  "value": "None"
+                },
+                {
+                  "name": "Low",
+                  "value": "Low"
+                },
+                {
+                  "name": "Medium",
+                  "value": "Medium"
+                },
+                {
+                  "name": "High",
+                  "value": "High"
+                }
+              ]
+            },
+            {
+              "displayName": "PDF Version",
+              "name": "pdfVersion",
+              "type": "options",
+              "default": "1.7",
+              "options": [
+                {
+                  "name": "1.4",
+                  "value": "1.4"
+                },
+                {
+                  "name": "1.5",
+                  "value": "1.5"
+                },
+                {
+                  "name": "1.6",
+                  "value": "1.6"
+                },
+                {
+                  "name": "1.7",
+                  "value": "1.7"
+                }
+              ]
+            },
+            {
+              "displayName": "Merge All Inputs",
+              "name": "mergeAll",
+              "type": "boolean",
+              "default": false,
+              "description": "Merge all input items into a single PDF document"
+            },
+            {
+              "displayName": "Wait For Images",
+              "name": "waitForImages",
+              "type": "boolean",
+              "default": true
+            },
+            {
+              "displayName": "Wait Time (ms)",
+              "name": "waitTime",
+              "type": "number",
+              "default": 0
+            },
+            {
+              "displayName": "Execute JavaScript",
+              "name": "executeJavascript",
+              "type": "boolean",
+              "default": true
+            }
+          ],
+          "executionMode": "batch"
+        },
+        "isTrigger": false,
+        "isFormWait": false,
+        "executionId": "6ab0d34adc837fd45f427167",
+        "isTimerWait": false,
+        "fileReference": {},
+        "isWebhookWait": false,
+        "connectedHandles": [],
+        "isPrimaryTrigger": false
+      },
+      "type": "action",
+      "width": 220,
+      "height": 93,
+      "dragging": false,
+      "position": {
+        "x": 1107.9350505326897,
+        "y": 222.14747682249362
+      },
+      "selected": true,
+      "positionAbsolute": {
+        "x": 1107.9350505326897,
+        "y": 222.14747682249362
+      }
+    },
+    {
+      "id": "llm-agent-execute-1786420853142",
+      "data": {
+        "label": "LLM Node",
+        "inputs": {
+          "model": "gemini-3.1-flash-lite-preview",
+          "provider": "gemini",
+          "question": "You are ManuMind AI's Manufacturing Report Generator.\r\n\r\nYour task is to analyze the provided manufacturing data and generate structured, professional content for a PDF report.\r\n\r\nThe input can be of TWO types:\r\n\r\n1. DASHBOARD / DATA VISUALIZATION REPORT\r\n2. PRODUCTION SCHEDULING REPORT\r\n\r The input is{{$node[\"code.execute-1786420205345\"].json}}\nThe input will contain: (sample format)\r\n\r\n{\r\n  \"reportType\": \"dashboard\" OR \"scheduling\",\r\n  \"generatedAt\": \"...\",\r\n  \"data\": {...}\r\n}\r\n\r\n--------------------------------------------------\r\nIMPORTANT\r\n--------------------------------------------------\r\n\r\nFirst identify the reportType.\r\n\r\nIf reportType = \"dashboard\":\r\nGenerate a Manufacturing Analytics Report.\r\n\r\nIf reportType = \"scheduling\":\r\nGenerate a Production Schedule Report.\r\n\r\nUse ONLY the information provided in the input.\r\n\r\nDo not invent values, machines, production numbers, dates, recommendations, or results.\r\n\r\nPerform calculations only when they can be derived reliably from the provided data.\r\n\r\n--------------------------------------------------\r\nFOR DASHBOARD REPORT\r\n--------------------------------------------------\r\n\r\nAnalyze:\r\n\r\n• Total production\r\n• Total defects\r\n• Average machine utilization\r\n• Best performing machine\r\n• Best performing shift\r\n• Production trend\r\n• Machine utilization\r\n• Defect distribution\r\n• Shift performance\r\n\r\nGenerate:\r\n\r\n1. Executive Summary\r\n2. Key Performance Indicators\r\n3. Production Performance Analysis\r\n4. Machine Utilization Analysis\r\n5. Defect Analysis\r\n6. Shift Performance Analysis\r\n7. Key Findings\r\n8. AI Recommendations\r\n9. Conclusion\r\n\r\nHighlight:\r\n\r\n• Production performance\r\n• Underutilized machines\r\n• Highest defect production line\r\n• Best performing shift\r\n• Production gaps or trends\r\n• Areas requiring attention\r\n\r\n--------------------------------------------------\r\nFOR SCHEDULING REPORT\r\n--------------------------------------------------\r\n\r\nAnalyze:\r\n\r\n• Production target\r\n• Maximum possible production\r\n• Production shortfall\r\n• Capacity status\r\n• Schedule start time\r\n• Estimated completion\r\n• Deadline\r\n• Deadline status\r\n• Machines used\r\n• Machine production capacity\r\n• Allocated production\r\n• Shift allocation\r\n• Schedule duration\r\n• AI scheduling insights\r\n\r\nGenerate:\r\n\r\n1. Executive Summary\r\n2. Production Target & Capacity Analysis\r\n3. Schedule Overview\r\n4. Machine Allocation\r\n5. Deadline Feasibility\r\n6. Production Shortfall Analysis\r\n7. AI Scheduling Insights\r\n8. Recommendations\r\n9. Conclusion\r\n\r\nIf capacityStatus is \"Insufficient\", clearly explain:\r\n\r\n• Requested production\r\n• Maximum achievable production\r\n• Remaining units\r\n• Deadline impact\r\n• Capacity limitation\r\n• Any additional time or capacity requirement mentioned in the input\r\n\r\nDo not claim that the target is achievable when the input indicates insufficient capacity.\r\n\r\n--------------------------------------------------\r\nREPORT METADATA\r\n--------------------------------------------------\r\n\r\nCreate:\r\n\r\n• Professional report title\r\n• Report type\r\n• Generated date/time\r\n• Short description\r\n\r\n--------------------------------------------------\r\nSTRUCTURED OUTPUT\r\n--------------------------------------------------\r\n\r\nReturn ONLY valid JSON.\r\n\r\nDo not return markdown.\r\n\r\nDo not return code fences.\r\n\r\nDo not include explanations outside the JSON.\r\n\r\nUse this exact structure:\r\n\r\n{\r\n  \"report\": {\r\n    \"title\": \"\",\r\n    \"reportType\": \"\",\r\n    \"generatedAt\": \"\",\r\n    \"description\": \"\",\r\n\r\n    \"executiveSummary\": \"\",\r\n\r\n    \"kpis\": [\r\n      {\r\n        \"label\": \"\",\r\n        \"value\": \"\",\r\n        \"unit\": \"\",\r\n        \"status\": \"\"\r\n      }\r\n    ],\r\n\r\n    \"sections\": [\r\n      {\r\n        \"title\": \"\",\r\n        \"summary\": \"\",\r\n        \"details\": []\r\n      }\r\n    ],\r\n\r\n    \"tables\": [\r\n      {\r\n        \"title\": \"\",\r\n        \"columns\": [],\r\n        \"rows\": []\r\n      }\r\n    ],\r\n\r\n    \"insights\": [\r\n      \"\"\r\n    ],\r\n\r\n    \"recommendations\": [\r\n      \"\"\r\n    ],\r\n\r\n    \"conclusion\": \"\"\r\n  }\r\n}\r\n\r\n--------------------------------------------------\r\nTABLE RULES\r\n--------------------------------------------------\r\n\r\nFor dashboard reports, include tables where useful, such as:\r\n\r\nMachine Utilization\r\n\r\nColumns:\r\nMachine | Utilization\r\n\r\nDefect Analysis\r\n\r\nColumns:\r\nProduction Line | Defects\r\n\r\nShift Performance\r\n\r\nColumns:\r\nShift | Product A | Product B | Product C\r\n\r\nFor scheduling reports:\r\n\r\nProduction Schedule\r\n\r\nColumns:\r\nMachine | Shift | Units/Hour | Allocated Units | Start Time | End Time | Duration\r\n\r\n--------------------------------------------------\r\nKPI RULES\r\n--------------------------------------------------\r\n\r\nFor dashboard reports, include relevant KPIs such as:\r\n\r\nTotal Production\r\nTotal Defects\r\nAverage Utilization\r\nBest Machine\r\nBest Shift\r\n\r\nFor scheduling reports, include:\r\n\r\nProduction Target\r\nMaximum Possible Production\r\nRemaining Units\r\nCapacity Status\r\nTotal Machines Used\r\nEstimated Duration\r\nDeadline Status\r\n\r\nDo not include a KPI if the required value is not available.\r\n\r\n--------------------------------------------------\r\nWRITING STYLE\r\n--------------------------------------------------\r\n\r\nThe report is intended for:\r\n\r\nFactory Managers\r\nProduction Managers\r\nOperations Managers\r\nManufacturing Engineers\r\n\r\nUse professional and concise manufacturing terminology.\r\n\r\nFocus on actionable information.\r\n\r\nDo not unnecessarily repeat the same information in multiple sections.\r\n\r\nKeep the report suitable for a professional PDF.\r\n\r\n--------------------------------------------------\r\nFINAL REQUIREMENT\r\n--------------------------------------------------\r\n\r\nThe output JSON must contain enough structured information for the next PDF generation node to create a complete professional manufacturing report without needing to interpret the original raw input again.",
+          "credentialId": "69562ffd-c93e-49f1-85a5-e1f183a8b358",
+          "promptSource": "define",
+          "systemPrompt": "",
+          "enableFallback": false,
+          "requireSpecificOutputFormat": false
+        },
+        "toolId": "llm-agent-execute",
+        "toolData": {
+          "id": "llm-agent-execute",
+          "displayName": "LLM Node",
+          "category": "AI / LLM",
+          "provider": "llmagent",
+          "operation": "execute",
+          "icon": "smart_toy",
+          "description": "Execute prompts with various LLM models (Gemini, Groq)",
+          "inputSchemaJSON": {
+            "type": "object",
+            "properties": {
+              "systemPrompt": {
+                "type": "string",
+                "default": "",
+                "description": "System prompt or persona that sets behavior (optional, hidden in UI)"
+              },
+              "promptSource": {
+                "type": "string",
+                "enum": [
+                  "connected",
+                  "define"
+                ],
+                "default": "define",
+                "description": "Source for Prompt (User Message)."
+              },
+              "question": {
+                "type": "string",
+                "description": "Prompt (User Message)"
+              },
+              "file": {
+                "type": "string",
+                "description": "Upload File "
+              },
+              "memory": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  },
+                  "config": {}
+                },
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": false,
+                "description": "Conversation memory configuration"
+              },
+              "provider": {
+                "type": "string",
+                "enum": [
+                  "groq",
+                  "gemini",
+                  "openai",
+                  "local"
+                ],
+                "default": "gemini",
+                "description": "The LLM provider to use"
+              },
+              "model": {
+                "type": "string",
+                "description": "The LLM model to use"
+              },
+              "requireSpecificOutputFormat": {
+                "type": "boolean",
+                "default": false,
+                "description": "Whether to require a specific output format"
+              },
+              "outputFormatSchema": {
+                "type": "string",
+                "description": "The schema or description of the required output format (e.g. JSON schema or \"name, age, email\")"
+              },
+              "enableFallback": {
+                "type": "boolean",
+                "default": false,
+                "description": "Whether to auto-retry with a fallback model if the primary fails"
+              },
+              "fallbackModel": {
+                "type": "string",
+                "description": "The fallback model ID to use when the primary model fails"
+              },
+              "temperature": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 2,
+                "description": "Controls how random or creative the output is. Lower values produce more focused and deterministic responses, higher values produce more varied and creative output."
+              },
+              "maxTokens": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 131072,
+                "description": "The maximum number of tokens (words/word-pieces) the model is allowed to generate in its response. Higher values allow longer answers but cost more."
+              },
+              "topK": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "description": "Limits the model to only consider the top K most probable next tokens at each step. Lower values make output more focused, higher values allow more variety."
+              },
+              "credentials": {
+                "type": "object",
+                "properties": {
+                  "apiKey": {
+                    "type": "string",
+                    "description": "API key for the selected LLM provider"
+                  }
+                },
+                "required": [
+                  "apiKey"
+                ],
+                "additionalProperties": false
+              },
+              "userId": {
+                "type": "string",
+                "description": "ID of the user executing the workflow"
+              },
+              "workflowId": {
+                "type": "string",
+                "description": "ID of the current workflow"
+              }
+            },
+            "required": [
+              "credentials"
+            ],
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          },
+          "executionMode": "batch"
+        },
+        "isTrigger": false,
+        "isFormWait": false,
+        "executionId": "6ab0d34adc837fd45f427167",
+        "isTimerWait": false,
+        "isWebhookWait": false,
+        "connectedHandles": [],
+        "isPrimaryTrigger": false
+      },
+      "type": "action",
+      "width": 220,
+      "height": 93,
+      "dragging": false,
+      "position": {
+        "x": 537.1020376924181,
+        "y": 225.1444741529698
+      },
+      "selected": false,
+      "positionAbsolute": {
+        "x": 537.1020376924181,
+        "y": 225.1444741529698
+      }
+    },
+    {
+      "id": "code.execute-1786421566987",
+      "data": {
+        "label": "Code",
+        "inputs": {
+          "code": "// ==========================================\n// ManuMind AI - PDF Report HTML Preprocessor\n// Purpose:\n// Parse Gemini's structured report JSON,\n// generate a complete HTML document,\n// and send the ready-to-render HTML\n// to the PDF Generator.\n// ==========================================\n\nconst items = $input.all();\n\nif (!items.length) {\n    return [{\n        json: {\n            error: \"No input received from Gemini.\"\n        }\n    }];\n}\n\n// ------------------------------------------\n// Get Gemini response\n// ------------------------------------------\n\nconst response = items[0]?.json?.response;\n\nif (!response) {\n    return [{\n        json: {\n            error: \"Gemini response not found.\"\n        }\n    }];\n}\n\n// ------------------------------------------\n// Parse Gemini JSON\n// ------------------------------------------\n\nlet report;\n\ntry {\n\n    // Remove markdown code fences if Gemini adds them\n    const cleanedResponse = String(response)\n        .replace(/^```json\\s*/i, \"\")\n        .replace(/^```\\s*/i, \"\")\n        .replace(/\\s*```$/i, \"\")\n        .trim();\n\n    report = JSON.parse(cleanedResponse);\n\n} catch (error) {\n\n    return [{\n        json: {\n            error: \"Unable to parse Gemini report JSON.\",\n            details: error.message\n        }\n    }];\n}\n\n// ------------------------------------------\n// Validate report\n// ------------------------------------------\n\nif (!report || !report.report) {\n    return [{\n        json: {\n            error: \"Invalid report structure from Gemini.\"\n        }\n    }];\n}\n\nconst data = report.report;\n\n// ------------------------------------------\n// HTML escape function\n// Prevents special characters from\n// breaking the HTML.\n// ------------------------------------------\n\nfunction escapeHtml(value) {\n\n    if (value === null || value === undefined) {\n        return \"\";\n    }\n\n    return String(value)\n        .replace(/&/g, \"&amp;\")\n        .replace(/</g, \"&lt;\")\n        .replace(/>/g, \"&gt;\")\n        .replace(/\"/g, \"&quot;\")\n        .replace(/'/g, \"&#039;\");\n}\n\n// ------------------------------------------\n// Basic report information\n// ------------------------------------------\n\nconst title =\n    data.title ||\n    \"ManuMind AI Manufacturing Report\";\n\nconst reportType =\n    data.reportType ||\n    \"Manufacturing Report\";\n\nconst generatedAt =\n    data.generatedAt ||\n    new Date().toISOString();\n\nconst description =\n    data.description ||\n    \"\";\n\nconst executiveSummary =\n    data.executiveSummary ||\n    \"\";\n\nconst conclusion =\n    data.conclusion ||\n    \"\";\n\n// ------------------------------------------\n// KPI HTML\n// ------------------------------------------\n\nconst kpis = Array.isArray(data.kpis)\n    ? data.kpis\n    : [];\n\nconst kpiRows = kpis.map(kpi => {\n\n    return `\n        <tr>\n            <td>${escapeHtml(kpi.label)}</td>\n            <td><strong>${escapeHtml(kpi.value)}</strong></td>\n            <td>${escapeHtml(kpi.unit)}</td>\n            <td>${escapeHtml(kpi.status)}</td>\n        </tr>\n    `;\n\n}).join(\"\");\n\n// ------------------------------------------\n// Detailed Sections HTML\n// ------------------------------------------\n\nconst sections = Array.isArray(data.sections)\n    ? data.sections\n    : [];\n\nconst sectionsHtml = sections.map(section => {\n\n    const details = Array.isArray(section.details)\n        ? section.details\n        : [];\n\n    const detailsHtml = details.map(detail => `\n        <li>${escapeHtml(detail)}</li>\n    `).join(\"\");\n\n    return `\n        <div class=\"section\">\n\n            <h3>${escapeHtml(section.title)}</h3>\n\n            <p class=\"section-summary\">\n                ${escapeHtml(section.summary)}\n            </p>\n\n            ${\n                details.length > 0\n                ? `<ul>${detailsHtml}</ul>`\n                : \"\"\n            }\n\n        </div>\n    `;\n\n}).join(\"\");\n\n// ------------------------------------------\n// Tables HTML\n// ------------------------------------------\n\nconst tables = Array.isArray(data.tables)\n    ? data.tables\n    : [];\n\nconst tablesHtml = tables.map(table => {\n\n    const columns = Array.isArray(table.columns)\n        ? table.columns\n        : [];\n\n    const rows = Array.isArray(table.rows)\n        ? table.rows\n        : [];\n\n    const headerHtml = columns.map(column => `\n        <th>${escapeHtml(column)}</th>\n    `).join(\"\");\n\n    const rowsHtml = rows.map(row => {\n\n        const cells = Array.isArray(row)\n            ? row.map(cell => `\n                <td>${escapeHtml(cell)}</td>\n            `).join(\"\")\n            : \"\";\n\n        return `<tr>${cells}</tr>`;\n\n    }).join(\"\");\n\n    return `\n        <h3 class=\"table-title\">\n            ${escapeHtml(table.title)}\n        </h3>\n\n        <table class=\"data-table\">\n\n            <thead>\n                <tr>\n                    ${headerHtml}\n                </tr>\n            </thead>\n\n            <tbody>\n                ${rowsHtml}\n            </tbody>\n\n        </table>\n    `;\n\n}).join(\"\");\n\n// ------------------------------------------\n// Insights HTML\n// ------------------------------------------\n\nconst insights = Array.isArray(data.insights)\n    ? data.insights\n    : [];\n\nconst insightsHtml = insights.map(insight => `\n    <li>${escapeHtml(insight)}</li>\n`).join(\"\");\n\n// ------------------------------------------\n// Recommendations HTML\n// ------------------------------------------\n\nconst recommendations = Array.isArray(data.recommendations)\n    ? data.recommendations\n    : [];\n\nconst recommendationsHtml = recommendations.map(recommendation => `\n    <li>${escapeHtml(recommendation)}</li>\n`).join(\"\");\n\n// ------------------------------------------\n// COMPLETE HTML DOCUMENT\n// ------------------------------------------\n\nconst html = `\n<!DOCTYPE html>\n\n<html>\n\n<head>\n\n<meta charset=\"UTF-8\">\n\n<style>\n\n@page {\n    size: A4;\n    margin: 20mm;\n}\n\nbody {\n    font-family: Arial, Helvetica, sans-serif;\n    color: #222;\n    font-size: 12px;\n    line-height: 1.5;\n    margin: 0;\n}\n\n.header {\n    border-bottom: 3px solid #2563eb;\n    padding-bottom: 15px;\n    margin-bottom: 25px;\n}\n\n.title {\n    font-size: 26px;\n    font-weight: bold;\n    color: #111827;\n    margin-bottom: 5px;\n}\n\n.subtitle {\n    font-size: 15px;\n    color: #4b5563;\n}\n\n.meta {\n    font-size: 10px;\n    color: #6b7280;\n    margin-top: 8px;\n}\n\nh2 {\n    font-size: 18px;\n    color: #1f2937;\n    border-bottom: 1px solid #d1d5db;\n    padding-bottom: 6px;\n    margin-top: 25px;\n}\n\nh3 {\n    font-size: 14px;\n    color: #374151;\n    margin-bottom: 6px;\n}\n\n.summary {\n    background: #f3f4f6;\n    border-left: 4px solid #2563eb;\n    padding: 12px;\n    margin: 10px 0 20px 0;\n}\n\n.section {\n    margin-bottom: 18px;\n    page-break-inside: avoid;\n}\n\n.section-summary {\n    color: #4b5563;\n}\n\n.kpi-table {\n    width: 100%;\n    border-collapse: collapse;\n    margin-top: 10px;\n    margin-bottom: 20px;\n}\n\n.kpi-table th {\n    background: #2563eb;\n    color: white;\n    padding: 8px;\n    text-align: left;\n}\n\n.kpi-table td {\n    border: 1px solid #d1d5db;\n    padding: 7px;\n}\n\n.data-table {\n    width: 100%;\n    border-collapse: collapse;\n    margin-top: 10px;\n    margin-bottom: 25px;\n    font-size: 10px;\n    page-break-inside: auto;\n}\n\n.data-table th {\n    background: #374151;\n    color: white;\n    padding: 7px;\n    text-align: left;\n}\n\n.data-table td {\n    border: 1px solid #d1d5db;\n    padding: 6px;\n}\n\n.data-table tr {\n    page-break-inside: avoid;\n}\n\n.table-title {\n    margin-top: 20px;\n}\n\nul {\n    padding-left: 22px;\n}\n\nli {\n    margin-bottom: 7px;\n}\n\n.footer {\n    margin-top: 35px;\n    padding-top: 10px;\n    border-top: 1px solid #d1d5db;\n    font-size: 9px;\n    color: #6b7280;\n    text-align: center;\n}\n\n</style>\n\n</head>\n\n<body>\n\n<!-- HEADER -->\n\n<div class=\"header\">\n\n    <div class=\"title\">\n        ${escapeHtml(title)}\n    </div>\n\n    <div class=\"subtitle\">\n        ${escapeHtml(reportType)}\n    </div>\n\n    <div class=\"meta\">\n        Generated: ${escapeHtml(generatedAt)}\n    </div>\n\n</div>\n\n\n<!-- REPORT OVERVIEW -->\n\n<h2>Report Overview</h2>\n\n<p>\n    ${escapeHtml(description)}\n</p>\n\n\n<!-- EXECUTIVE SUMMARY -->\n\n<h2>Executive Summary</h2>\n\n<div class=\"summary\">\n    ${escapeHtml(executiveSummary)}\n</div>\n\n\n<!-- KPIs -->\n\n${\n    kpis.length > 0\n    ? `\n        <h2>Key Performance Indicators</h2>\n\n        <table class=\"kpi-table\">\n\n            <thead>\n\n                <tr>\n                    <th>KPI</th>\n                    <th>Value</th>\n                    <th>Unit</th>\n                    <th>Status</th>\n                </tr>\n\n            </thead>\n\n            <tbody>\n                ${kpiRows}\n            </tbody>\n\n        </table>\n    `\n    : \"\"\n}\n\n\n<!-- DETAILED ANALYSIS -->\n\n${\n    sections.length > 0\n    ? `\n        <h2>Detailed Analysis</h2>\n        ${sectionsHtml}\n    `\n    : \"\"\n}\n\n\n<!-- DATA TABLES -->\n\n${\n    tables.length > 0\n    ? `\n        <h2>Production Data</h2>\n        ${tablesHtml}\n    `\n    : \"\"\n}\n\n\n<!-- AI INSIGHTS -->\n\n${\n    insights.length > 0\n    ? `\n        <h2>AI Insights</h2>\n\n        <ul>\n            ${insightsHtml}\n        </ul>\n    `\n    : \"\"\n}\n\n\n<!-- RECOMMENDATIONS -->\n\n${\n    recommendations.length > 0\n    ? `\n        <h2>Recommendations</h2>\n\n        <ul>\n            ${recommendationsHtml}\n        </ul>\n    `\n    : \"\"\n}\n\n\n<!-- CONCLUSION -->\n\n${\n    conclusion\n    ? `\n        <h2>Conclusion</h2>\n\n        <div class=\"summary\">\n            ${escapeHtml(conclusion)}\n        </div>\n    `\n    : \"\"\n}\n\n\n<!-- FOOTER -->\n\n<div class=\"footer\">\n    ManuMind AI | Manufacturing Intelligence Platform\n</div>\n\n</body>\n\n</html>\n`;\n\n// ------------------------------------------\n// Create safe filename\n// ------------------------------------------\n\nconst safeReportType = String(reportType)\n    .replace(/[^a-zA-Z0-9-_]/g, \"_\");\n\nconst fileName =\n    `ManuMind_${safeReportType}_Report.pdf`;\n\n// ------------------------------------------\n// OUTPUT\n// ------------------------------------------\n\nreturn [\n    {\n        json: {\n            html: html,\n            fileName: fileName,\n            reportType: reportType,\n            title: title\n        }\n    }\n];",
+          "mode": "all",
+          "language": "javascript"
+        },
+        "toolId": "code.execute",
+        "toolData": {
+          "id": "code.execute",
+          "displayName": "Code",
+          "category": "Data  Processing",
+          "provider": "code",
+          "operation": "execute",
+          "icon": "💻",
+          "description": "Execute custom JavaScript or Python code",
+          "inputSchemaJSON": {
+            "type": "object",
+            "properties": {
+              "language": {
+                "type": "string",
+                "enum": [
+                  "javascript",
+                  "python"
+                ],
+                "description": "Programming language to execute"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "all",
+                  "each"
+                ],
+                "default": "all",
+                "description": "Execution mode"
+              },
+              "code": {
+                "type": "string",
+                "description": "Code to execute"
+              },
+              "input": {
+                "description": "Input data available as \"input\" variable"
+              },
+              "context": {
+                "description": "Execution context including other node results"
+              }
+            },
+            "required": [
+              "language",
+              "code"
+            ],
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          }
+        },
+        "isTrigger": false,
+        "isFormWait": false,
+        "executionId": "6ab0d34adc837fd45f427167",
+        "isTimerWait": false,
+        "isWebhookWait": false,
+        "connectedHandles": [],
+        "isPrimaryTrigger": false
+      },
+      "type": "action",
+      "width": 220,
+      "height": 93,
+      "dragging": false,
+      "position": {
+        "x": 812.8257920962317,
+        "y": 223.64597548773168
+      },
+      "selected": false,
+      "positionAbsolute": {
+        "x": 812.8257920962317,
+        "y": 223.64597548773168
+      }
+    },
+    {
+      "id": "code.execute-1786424088604",
+      "data": {
+        "label": "Code",
+        "inputs": {
+          "code": "// Get PDF Generator output\nconst item = $input.first();\n\nconst pdfData = item.json.pdfData;\nconst fileName = item.json.fileName || \"ManuMind_Report.pdf\";\nconst mimeType = item.json.mimeType || \"application/pdf\";\n\nif (!pdfData) {\n    return [{\n        json: {\n            error: \"PDF base64 data not found\"\n        }\n    }];\n}\n\n// Create an explicit attachment object\nreturn [{\n    json: {\n        attachment: {\n            filename: fileName,\n            mimeType: mimeType,\n            content: pdfData\n        }\n    }\n}];",
+          "mode": "all",
+          "language": "javascript"
+        },
+        "toolId": "code.execute",
+        "toolData": {
+          "id": "code.execute",
+          "displayName": "Code",
+          "category": "Data  Processing",
+          "provider": "code",
+          "operation": "execute",
+          "icon": "💻",
+          "description": "Execute custom JavaScript or Python code",
+          "inputSchemaJSON": {
+            "type": "object",
+            "properties": {
+              "language": {
+                "type": "string",
+                "enum": [
+                  "javascript",
+                  "python"
+                ],
+                "description": "Programming language to execute"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "all",
+                  "each"
+                ],
+                "default": "all",
+                "description": "Execution mode"
+              },
+              "code": {
+                "type": "string",
+                "description": "Code to execute"
+              },
+              "input": {
+                "description": "Input data available as \"input\" variable"
+              },
+              "context": {
+                "description": "Execution context including other node results"
+              }
+            },
+            "required": [
+              "language",
+              "code"
+            ],
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          }
+        },
+        "isTrigger": false,
+        "isFormWait": false,
+        "executionId": "6ab0d34adc837fd45f427167",
+        "isTimerWait": false,
+        "isWebhookWait": false,
+        "connectedHandles": [],
+        "isPrimaryTrigger": false
+      },
+      "type": "action",
+      "width": 220,
+      "height": 93,
+      "dragging": false,
+      "position": {
+        "x": 1404.2574832224398,
+        "y": 230.63805952659834
+      },
+      "selected": false,
+      "positionAbsolute": {
+        "x": 1404.2574832224398,
+        "y": 230.63805952659834
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "reactflow__edge-webhook-1786419926564-code.execute-1786420205345",
+      "data": {},
+      "type": "custom",
+      "source": "webhook-1786419926564",
+      "target": "code.execute-1786420205345"
+    },
+    {
+      "id": "reactflow__edge-code.execute-1786420205345-llm-agent-execute-1786420853142",
+      "data": {},
+      "type": "custom",
+      "source": "code.execute-1786420205345",
+      "target": "llm-agent-execute-1786420853142"
+    },
+    {
+      "id": "reactflow__edge-llm-agent-execute-1786420853142-code.execute-1786421566987",
+      "data": {},
+      "type": "custom",
+      "source": "llm-agent-execute-1786420853142",
+      "target": "code.execute-1786421566987"
+    },
+    {
+      "id": "reactflow__edge-code.execute-1786421566987-pdfGenerator-1786420840131",
+      "data": {},
+      "type": "custom",
+      "source": "code.execute-1786421566987",
+      "target": "pdfGenerator-1786420840131"
+    },
+    {
+      "id": "reactflow__edge-pdfGenerator-1786420840131-code.execute-1786424088604",
+      "data": {},
+      "type": "custom",
+      "source": "pdfGenerator-1786420840131",
+      "target": "code.execute-1786424088604"
+    },
+    {
+      "id": "reactflow__edge-code.execute-1786424088604-google.gmail.send-1786420258093",
+      "data": {},
+      "type": "custom",
+      "source": "code.execute-1786424088604",
+      "target": "google.gmail.send-1786420258093"
+    }
+  ]
+}
